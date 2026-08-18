@@ -2,7 +2,7 @@
 
 ## v0.1.1 boundary — authoritative inventory and accountability
 
-The first executable boundary is an offline, institution-scoped governance registry. It deliberately separates **authoritative references** from later governance decisions and evidence.
+The first executable boundary is an offline, institution-scoped governance registry. It deliberately separates authoritative references from later governance decisions and evidence.
 
 ```text
 GovernancePrincipal ─┐
@@ -33,31 +33,65 @@ DataElement  Classification  CDE Designation  BusinessPurpose
                                    AssetPurposeBinding
 ```
 
-### Data elements
+`DataElementRecord` creates exact element-level targets. Classification, CDE designation and business purpose are explicit accountable inputs, not metadata inference. Historical evidence is preserved and later asset/purpose versions make prior current-state evidence stale.
 
-`DataElementRecord` identifies a governed element underneath an exact `institution_id + asset_id + asset_version`. The element owner must resolve to an accountable principal in the same institution. This creates an exact target for later lineage and data-quality rules instead of forcing those controls to operate only at whole-asset granularity.
+## v0.1.3 boundary — lineage, transformation and provenance
 
-### Classification decisions
+v0.1.3 adds an append-only provenance graph over the authoritative and semantic foundations:
 
-`ClassificationDecision` is explicit evidence for either an asset or data element. Asset-scoped decisions must agree with the classification already recorded on the authoritative asset version; semantic evidence cannot silently rewrite the authoritative inventory. Element-scoped decisions bind to the exact element digest.
+```text
+DataAssetRegistry ───────────────┐
+                                ├─> LineageRegistry ──> lineage snapshot
+SemanticGovernanceRegistry ─────┘       |       |
+                                        |       └─ CompletenessRequirement/Report
+                                        └─ TransformationRecord + LineageEdge
+```
 
-Historical classification decisions remain immutable. `assert_classification_current` fails closed when a newer asset version supersedes the decision target.
+### Exact endpoints
 
-### Critical data elements
+`LineageEndpointRef` addresses an exact governed asset or data element by institution, asset identity, asset version, optional element identity and target digest. Endpoint resolution fails closed on dangling references or digest mismatch.
 
-`CriticalDataElementDesignation` binds a CDE owner, accountable decision owner, rationale and source-evidence digest to an exact governed data-element digest. The designation does not infer criticality from names, schemas or content.
+Current-state verification also requires the referenced asset version to remain the latest registered version. Historical lineage is retained, but it is not silently represented as current after a new asset version is introduced.
 
-A newer asset version makes the historical CDE designation non-current until corresponding semantic evidence is established for the new version.
+### Transformations
 
-### Business purposes
+`TransformationRecord` is independently versioned and binds:
 
-`BusinessPurpose` is independently versioned and owned. `AssetPurposeBinding` explicitly binds an exact asset version to an exact purpose version with approval owner, rationale and evidence digest.
+- accountable owner;
+- execution-system identity;
+- code digest;
+- configuration digest;
+- source-evidence digest.
 
-A newer asset version or purpose version makes the prior binding stale. Business-purpose evidence is not a GDPR/KVKK lawful-basis determination and does not by itself establish processing permissibility.
+Transformation versions are contiguous and immutable. A later transformation version makes edges bound to the earlier version non-current for current-state checks.
 
-### Semantic snapshot
+A bound digest proves integrity association only. It does not prove that the code/configuration is semantically correct, secure, or regulator-approved.
 
-`SemanticGovernanceRegistry.snapshot_digest` binds the exact underlying `DataAssetRegistry.snapshot_digest` plus data-element, classification, CDE, purpose and purpose-binding artifact digests. The semantic layer therefore cannot be represented as current independently of the authoritative registry evidence it references.
+### Lineage edges
+
+Each `LineageEdge` binds an exact source endpoint, exact target endpoint, relationship type, transformation version/digest, producer system, consumer system and evidence digest.
+
+The graph supports asset-level, data-element-level and mixed-granularity edges. Source/target/system/transformation references must resolve in the same institution. Directed cycles are rejected when an edge is registered.
+
+Cycle rejection is a governance invariant for this reference graph; it is not a claim that every real-world processing topology must be acyclic outside the represented governed lineage scope.
+
+### Completeness requirements
+
+DataGovOps does not infer that every asset or CDE automatically requires upstream lineage. An accountable principal records a `LineageCompletenessRequirement` for each target where explicit upstream lineage is required.
+
+`LineageCompletenessReport` evaluates only those configured requirements and returns deterministic missing/stale requirement identifiers. Evaluation without any explicit requirement fails closed rather than reporting a vacuous success.
+
+### Snapshot binding
+
+`LineageRegistry.snapshot_digest` binds:
+
+- the exact `DataAssetRegistry` snapshot;
+- the exact `SemanticGovernanceRegistry` snapshot;
+- all transformation versions;
+- all lineage edges;
+- all lineage completeness requirements.
+
+A lineage completeness report binds to that exact lineage snapshot and becomes stale when any of those governed inputs change.
 
 ## Planned v0.1 layers
 

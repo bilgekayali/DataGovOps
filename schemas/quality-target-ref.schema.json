@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Quality Target Ref v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","kind","asset_id","asset_version","element_id","target_digest","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "kind": {"enum":["asset","critical_data_element"]},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "element_id": {"type":["string","null"],"minLength":1,"maxLength":256},
+    "target_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schema_version": {"const":"datagovops.quality-target-ref.v1"}
+  },
+  "allOf": [
+    {"if":{"properties":{"kind":{"const":"asset"}}},"then":{"properties":{"element_id":{"type":"null"}}}},
+    {"if":{"properties":{"kind":{"const":"critical_data_element"}}},"then":{"properties":{"element_id":{"type":"string","minLength":1,"maxLength":256}}}}
+  ]
+}

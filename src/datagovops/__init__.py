@@ -23,6 +23,26 @@ from .models import (
     canonical_json,
     digest_artifact,
 )
+from .quality import (
+    ComparisonOperator,
+    EvidenceTreatment,
+    FindingResolutionState,
+    FindingSeverity,
+    QualityDimension,
+    QualityEvaluationPolicy,
+    QualityEvaluationState,
+    QualityFinding,
+    QualityFindingResolution,
+    QualityObservation,
+    QualityRegistry,
+    QualityRemediationEvidence,
+    QualityRetestEvidence,
+    QualityRule,
+    QualityRuleEvaluation,
+    QualityTargetKind,
+    QualityTargetRef,
+    RetestOutcome,
+)
 from .registry import DataAssetRegistry
 from .semantic import (
     AssetPurposeBinding,
@@ -41,6 +61,7 @@ __all__ = [
     "BusinessPurpose",
     "ClassificationDecision",
     "ClassificationScope",
+    "ComparisonOperator",
     "CriticalDataElementDesignation",
     "DataAssetRecord",
     "DataAssetRegistry",
@@ -49,6 +70,9 @@ __all__ = [
     "DataClassification",
     "DataCriticality",
     "DataElementRecord",
+    "EvidenceTreatment",
+    "FindingResolutionState",
+    "FindingSeverity",
     "GovernanceError",
     "GovernancePolicy",
     "GovernancePrincipal",
@@ -60,6 +84,20 @@ __all__ = [
     "LineageRegistry",
     "LineageRelationship",
     "PrincipalType",
+    "QualityDimension",
+    "QualityEvaluationPolicy",
+    "QualityEvaluationState",
+    "QualityFinding",
+    "QualityFindingResolution",
+    "QualityObservation",
+    "QualityRegistry",
+    "QualityRemediationEvidence",
+    "QualityRetestEvidence",
+    "QualityRule",
+    "QualityRuleEvaluation",
+    "QualityTargetKind",
+    "QualityTargetRef",
+    "RetestOutcome",
     "SemanticGovernanceRegistry",
     "TransformationRecord",
     "assert_validation_report_current",
@@ -67,4 +105,4 @@ __all__ = [
     "digest_artifact",
 ]
 
-__version__ = "0.1.0.dev3"
+__version__ = "0.1.0.dev4"

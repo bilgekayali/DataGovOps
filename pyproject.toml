@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datagovops"
-version = "0.1.0.dev3"
+version = "0.1.0.dev4"
 description = "Evidence-backed data governance, classification, and accountability for regulated financial institutions"
 readme = "README.md"
 requires-python = ">=3.11"

@@ -47,51 +47,68 @@ SemanticGovernanceRegistry ─────┘       |       |
                                         └─ TransformationRecord + LineageEdge
 ```
 
-### Exact endpoints
+`LineageEndpointRef` addresses exact governed asset/data-element versions and content digests. `TransformationRecord` binds owner, execution system and code/config/evidence digests. Lineage edges are append-only, reject dangling/cross-institution references and directed cycles, and current-state checks fail closed when asset/transformation versions advance.
 
-`LineageEndpointRef` addresses an exact governed asset or data element by institution, asset identity, asset version, optional element identity and target digest. Endpoint resolution fails closed on dangling references or digest mismatch.
+Lineage completeness is evaluated only against explicit institution-owned requirements; no requirements does not produce a vacuous success.
 
-Current-state verification also requires the referenced asset version to remain the latest registered version. Historical lineage is retained, but it is not silently represented as current after a new asset version is introduced.
+## v0.1.4 boundary — data quality and remediation evidence
 
-### Transformations
+v0.1.4 adds deterministic quality governance over exact authoritative/semantic targets:
 
-`TransformationRecord` is independently versioned and binds:
+```text
+DataAssetRegistry ───────────────┐
+                                ├─> QualityRegistry ──> quality snapshot
+SemanticGovernanceRegistry ─────┘       |
+                                        ├─ QualityRule + EvaluationPolicy
+                                        ├─ Observation -> RuleEvaluation
+                                        └─ Finding -> Remediation -> Retest -> Resolution
+```
 
-- accountable owner;
-- execution-system identity;
-- code digest;
-- configuration digest;
+### Exact quality targets
+
+`QualityTargetRef` addresses either an exact asset version or an exact registered `CriticalDataElementDesignation`. A CDE rule cannot be attached merely to an arbitrary element name; the designation artifact must exist and its digest must match.
+
+Current-state evaluation fails closed when a newer asset/CDE version supersedes the target.
+
+### Rules and thresholds
+
+`QualityRule` is independently versioned and binds:
+
+- accountable rule owner;
+- quality dimension;
+- explicit metric name and measurement unit;
+- integer threshold and comparison operator;
+- maximum observation age;
+- finding severity;
 - source-evidence digest.
 
-Transformation versions are contiguous and immutable. A later transformation version makes edges bound to the earlier version non-current for current-state checks.
+Metric values are intentionally represented as governed integers with an explicit unit. Institutions can use counts, basis points, milliseconds or other documented units without hidden floating-point threshold semantics.
 
-A bound digest proves integrity association only. It does not prove that the code/configuration is semantically correct, secure, or regulator-approved.
+### Observation policy and evaluation
 
-### Lineage edges
+`QualityObservation` binds an immutable observed value to an exact rule digest, target digest and source-system identity.
 
-Each `LineageEdge` binds an exact source endpoint, exact target endpoint, relationship type, transformation version/digest, producer system, consumer system and evidence digest.
+`QualityEvaluationPolicy` is institution-owned and controls whether missing/stale evidence is treated as `incomplete` or `breached`. Neither treatment may produce PASS. Multiple distinct observations at the same latest measurement timestamp fail closed as `conflicting_latest_observation`.
 
-The graph supports asset-level, data-element-level and mixed-granularity edges. Source/target/system/transformation references must resolve in the same institution. Directed cycles are rejected when an edge is registered.
+A rule evaluation is one of:
 
-Cycle rejection is a governance invariant for this reference graph; it is not a claim that every real-world processing topology must be acyclic outside the represented governed lineage scope.
+- `passed` — fresh selected observation satisfies the configured threshold;
+- `breached` — threshold failed or institution policy treats missing/stale evidence as breach;
+- `incomplete` — evidence is missing, stale under incomplete policy, or conflicting.
 
-### Completeness requirements
+`regulatory_compliance_determined` is fixed to `false`.
 
-DataGovOps does not infer that every asset or CDE automatically requires upstream lineage. An accountable principal records a `LineageCompletenessRequirement` for each target where explicit upstream lineage is required.
+### Findings, remediation and retest
 
-`LineageCompletenessReport` evaluates only those configured requirements and returns deterministic missing/stale requirement identifiers. Evaluation without any explicit requirement fails closed rather than reporting a vacuous success.
+A passed evaluation cannot create a finding. Finding severity must match the governed rule severity, preventing downstream severity downgrade.
 
-### Snapshot binding
+Remediation evidence is immutable and accountable. Retest evidence must bind a post-remediation evaluation for the same rule. HIGH/CRITICAL findings require a reviewer distinct from the remediation owner before a passed retest can close the finding.
 
-`LineageRegistry.snapshot_digest` binds:
+`QualityFindingResolution` deterministically represents `open`, `remediation_submitted`, `retest_failed` or `closed` and retains all remediation/retest artifact digests in evidence history.
 
-- the exact `DataAssetRegistry` snapshot;
-- the exact `SemanticGovernanceRegistry` snapshot;
-- all transformation versions;
-- all lineage edges;
-- all lineage completeness requirements.
+### Assurance boundary
 
-A lineage completeness report binds to that exact lineage snapshot and becomes stale when any of those governed inputs change.
+A quality PASS proves only that represented governance inputs satisfied the represented threshold at the represented time. It does not prove objective accuracy/completeness, fitness for regulatory reporting, BCBS 239 compliance, legal applicability, security or regulator acceptance.
 
 ## Planned v0.1 layers
 

@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"DataGovOps Quality Remediation Evidence v1","type":"object","additionalProperties":false,
+  "required":["institution_id","remediation_id","finding_digest","owner_id","summary","completed_at","evidence_digest","schema_version"],
+  "properties":{
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "remediation_id":{"type":"string","minLength":1,"maxLength":256},
+    "finding_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "owner_id":{"type":"string","minLength":1,"maxLength":256},
+    "summary":{"type":"string","minLength":1,"maxLength":2048},
+    "completed_at":{"type":"string","format":"date-time"},
+    "evidence_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schema_version":{"const":"datagovops.quality-remediation-evidence.v1"}
+  }
+}

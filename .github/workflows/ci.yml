@@ -50,6 +50,7 @@ jobs:
               Path("src/datagovops/registry.py"),
               Path("src/datagovops/semantic.py"),
               Path("src/datagovops/lineage.py"),
+              Path("src/datagovops/quality.py"),
               Path("src/datagovops/validation.py"),
           ]
           for path in paths:
@@ -80,12 +81,13 @@ jobs:
           /tmp/datagovops-smoke/bin/python -m pip install dist/*.whl
           /tmp/datagovops-smoke/bin/python - <<'PY'
           import datagovops
-          from datagovops import DataAssetRegistry, DataAssetValidator, LineageRegistry, SemanticGovernanceRegistry
+          from datagovops import DataAssetRegistry, DataAssetValidator, LineageRegistry, QualityRegistry, SemanticGovernanceRegistry
 
-          assert datagovops.__version__ == "0.1.0.dev3"
+          assert datagovops.__version__ == "0.1.0.dev4"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None
           assert LineageRegistry is not None
+          assert QualityRegistry is not None
           print(datagovops.__version__)
           PY

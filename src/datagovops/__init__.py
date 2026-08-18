@@ -4,7 +4,6 @@ from .access_retention import (
     AccessApprovalDecision,
     AccessGrant,
     AccessPurposeApproval,
-    AccessRetentionPrivacyRegistry,
     AccessRole,
     AccessSubjectKind,
     DataLocationEvidence,
@@ -22,6 +21,7 @@ from .access_retention import (
     PrivacySecurityObligationMapping,
     RetentionSchedule,
 )
+from .access_retention_strict import AccessRetentionPrivacyRegistry
 from .lineage import (
     LineageCompletenessReport,
     LineageCompletenessRequirement,

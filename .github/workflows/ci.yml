@@ -53,6 +53,10 @@ jobs:
               Path("src/datagovops/quality.py"),
               Path("src/datagovops/access_retention.py"),
               Path("src/datagovops/access_retention_strict.py"),
+              Path("src/datagovops/dossier.py"),
+              Path("src/datagovops/dossier_release.py"),
+              Path("src/datagovops/dossier_verify.py"),
+              Path("src/datagovops/cli.py"),
               Path("src/datagovops/validation.py"),
           ]
           for path in paths:
@@ -83,14 +87,31 @@ jobs:
           /tmp/datagovops-smoke/bin/python -m pip install dist/*.whl
           /tmp/datagovops-smoke/bin/python - <<'PY'
           import datagovops
-          from datagovops import AccessRetentionPrivacyRegistry, DataAssetRegistry, DataAssetValidator, LineageRegistry, QualityRegistry, SemanticGovernanceRegistry
+          from datagovops import (
+              AccessRetentionPrivacyRegistry,
+              DataAssetRegistry,
+              DataAssetValidator,
+              GovernanceDossierBuilder,
+              LineageRegistry,
+              QualityRegistry,
+              SemanticGovernanceRegistry,
+              verify_dossier_document,
+          )
 
-          assert datagovops.__version__ == "0.1.0.dev5"
+          assert datagovops.__version__ == "0.1.0"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None
           assert LineageRegistry is not None
           assert QualityRegistry is not None
           assert AccessRetentionPrivacyRegistry is not None
+          assert GovernanceDossierBuilder is not None
+          assert verify_dossier_document is not None
           print(datagovops.__version__)
           PY
+          /tmp/datagovops-smoke/bin/datagovops --version
+          printf '{"b":2,"a":1}\n' > /tmp/document.json
+          /tmp/datagovops-smoke/bin/datagovops digest /tmp/document.json
+          printf '{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,"required":["a"],"properties":{"a":{"type":"integer"}}}\n' > /tmp/schema.json
+          printf '{"a":1}\n' > /tmp/schema-document.json
+          /tmp/datagovops-smoke/bin/datagovops schema /tmp/schema.json /tmp/schema-document.json

@@ -1,5 +1,15 @@
 """DataGovOps governed-data core."""
 
+from .lineage import (
+    LineageCompletenessReport,
+    LineageCompletenessRequirement,
+    LineageEdge,
+    LineageEndpointKind,
+    LineageEndpointRef,
+    LineageRegistry,
+    LineageRelationship,
+    TransformationRecord,
+)
 from .models import (
     AuthoritativeSystem,
     DataAssetRecord,
@@ -42,11 +52,19 @@ __all__ = [
     "GovernanceError",
     "GovernancePolicy",
     "GovernancePrincipal",
+    "LineageCompletenessReport",
+    "LineageCompletenessRequirement",
+    "LineageEdge",
+    "LineageEndpointKind",
+    "LineageEndpointRef",
+    "LineageRegistry",
+    "LineageRelationship",
     "PrincipalType",
     "SemanticGovernanceRegistry",
+    "TransformationRecord",
     "assert_validation_report_current",
     "canonical_json",
     "digest_artifact",
 ]
 
-__version__ = "0.1.0.dev2"
+__version__ = "0.1.0.dev3"

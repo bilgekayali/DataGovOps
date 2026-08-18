@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"DataGovOps Quality Finding Resolution v1","type":"object","additionalProperties":false,
+  "required":["institution_id","finding_digest","state","remediation_digest","retest_digest","evidence_history_digests","resolved_at","schema_version"],
+  "properties":{
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "finding_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "state":{"enum":["open","remediation_submitted","retest_failed","closed"]},
+    "remediation_digest":{"type":["string","null"],"pattern":"^[0-9a-f]{64}$"},
+    "retest_digest":{"type":["string","null"],"pattern":"^[0-9a-f]{64}$"},
+    "evidence_history_digests":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[0-9a-f]{64}$"}},
+    "resolved_at":{"type":"string","format":"date-time"},
+    "schema_version":{"const":"datagovops.quality-finding-resolution.v1"}
+  },
+  "allOf":[
+    {"if":{"properties":{"state":{"const":"open"}}},"then":{"properties":{"remediation_digest":{"type":"null"},"retest_digest":{"type":"null"}}}},
+    {"if":{"properties":{"state":{"const":"remediation_submitted"}}},"then":{"properties":{"remediation_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},"retest_digest":{"type":"null"}}}},
+    {"if":{"properties":{"state":{"enum":["retest_failed","closed"]}}},"then":{"properties":{"remediation_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},"retest_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"}}}}
+  ]
+}

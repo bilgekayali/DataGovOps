@@ -52,6 +52,7 @@ jobs:
               Path("src/datagovops/lineage.py"),
               Path("src/datagovops/quality.py"),
               Path("src/datagovops/access_retention.py"),
+              Path("src/datagovops/access_retention_strict.py"),
               Path("src/datagovops/validation.py"),
           ]
           for path in paths:

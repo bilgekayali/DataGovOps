@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=75", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "datagovops"
-version = "0.1.0"
+version = "0.1.0.dev1"
 description = "Evidence-backed data governance, classification, and accountability for regulated financial institutions"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,11 +13,17 @@ license = { text = "Apache-2.0" }
 dependencies = []
 keywords = ["data-governance", "bcbs239", "gdpr", "data-quality", "banking"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 2 - Pre-Alpha",
   "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+]
+
+[project.optional-dependencies]
+dev = [
+  "jsonschema>=4.23,<5",
 ]
 
 [tool.setuptools]

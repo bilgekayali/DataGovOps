@@ -503,8 +503,8 @@ class QualityRegistry:
             state = self._treatment_state(policy.missing_observation_treatment)
             reason = "missing_observation"
         else:
-            latest_time = max(item.measured_at for item in eligible)
-            latest = [item for item in eligible if item.measured_at == latest_time]
+            latest_time = max(_parse_timestamp(item.measured_at) for item in eligible)
+            latest = [item for item in eligible if _parse_timestamp(item.measured_at) == latest_time]
             if len(latest) > 1:
                 state = QualityEvaluationState.INCOMPLETE
                 reason = "conflicting_latest_observation"
@@ -610,8 +610,8 @@ class QualityRegistry:
     def _latest_unique(items, timestamp_field: str):
         if not items:
             return None
-        latest_time = max(getattr(item, timestamp_field) for item in items)
-        latest = [item for item in items if getattr(item, timestamp_field) == latest_time]
+        latest_time = max(_parse_timestamp(getattr(item, timestamp_field)) for item in items)
+        latest = [item for item in items if _parse_timestamp(getattr(item, timestamp_field)) == latest_time]
         if len(latest) > 1:
             raise GovernanceError("conflicting latest quality lifecycle evidence")
         return latest[0]

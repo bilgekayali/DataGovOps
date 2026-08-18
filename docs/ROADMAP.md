@@ -13,13 +13,15 @@
 - [x] strict schemas and Python 3.11/3.12/3.13 CI.
 
 ### v0.1.2 — Classification, CDE and business-purpose evidence (#4)
-- [ ] governed classification-decision artifacts;
-- [ ] critical data element designation and ownership;
-- [ ] business-purpose registry and exact asset-version bindings;
-- [ ] stale-decision validation and strict schemas.
+- [x] exact asset-version data-element identity and ownership;
+- [x] governed asset/data-element classification-decision artifacts;
+- [x] critical data element designation, accountable owner and evidence;
+- [x] versioned business-purpose registry and exact asset-version bindings;
+- [x] stale asset/purpose validation and conflicting-decision failure paths;
+- [x] deterministic semantic snapshot and strict schemas.
 
 ### v0.1.3 — Lineage, transformation and provenance (#5)
-- [ ] source/target asset-version lineage;
+- [ ] source/target asset- and data-element-version lineage;
 - [ ] transformation identity, owner and code/config digest;
 - [ ] producer/consumer/system relationships;
 - [ ] lineage snapshot and completeness gaps.

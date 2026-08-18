@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datagovops.dev/schemas/governance-policy.schema.json",
+  "title": "DataGovOps Governance Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "institution_id",
+    "personal_data_requires_retention_policy",
+    "high_criticality_requires_quality_owner",
+    "restricted_requires_retention_policy",
+    "source_of_truth_requires_authoritative_system",
+    "owner_steward_separation_required"
+  ],
+  "properties": {
+    "schema_version": {"const": "datagovops.governance-policy.v1"},
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "personal_data_requires_retention_policy": {"type": "boolean"},
+    "high_criticality_requires_quality_owner": {"type": "boolean"},
+    "restricted_requires_retention_policy": {"type": "boolean"},
+    "source_of_truth_requires_authoritative_system": {"type": "boolean"},
+    "owner_steward_separation_required": {"type": "boolean"}
+  }
+}

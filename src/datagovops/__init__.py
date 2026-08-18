@@ -31,9 +31,9 @@ from .dossier import (
     GovernanceArtifact,
     GovernanceDossier,
     dossier_document,
-    verify_dossier_document,
 )
 from .dossier_release import GovernanceDossierBuilder
+from .dossier_verify import verify_dossier_document
 from .lineage import (
     LineageCompletenessReport,
     LineageCompletenessRequirement,

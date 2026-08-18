@@ -40,10 +40,13 @@
 - [x] evidence-history preservation, strict schemas and dev4 CI boundary.
 
 ### v0.1.5 — Access, retention and privacy/security obligations (#7)
-- [ ] access-purpose bindings and accountable approval evidence;
-- [ ] retention schedules and deletion-eligibility evidence;
-- [ ] legal-hold override state;
-- [ ] privacy/security obligation mappings and location evidence.
+- [x] versioned access roles bound to governed principals and permissions;
+- [x] exact asset/purpose access approvals and grants with stale/revocation checks;
+- [x] retention schedules and deterministic deletion-eligibility evidence;
+- [x] legal-hold and separate release evidence that blocks eligibility while active;
+- [x] privacy/security/residency/cross-border mappings and exact location evidence;
+- [x] institution-owned missing/stale control policy and deterministic gap reports;
+- [x] strict schemas and dev5 CI boundary.
 
 ### v0.1.6 — Governance dossier, CLI and release gate (#8)
 - [ ] deterministic dossier over the complete governed state;

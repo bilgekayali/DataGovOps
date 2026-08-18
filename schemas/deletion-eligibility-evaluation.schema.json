@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Deletion Eligibility Evaluation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","asset_id","asset_version","asset_digest","schedule_digest","retention_deadline","active_hold_digests","state","reason_code","evaluated_at","deletion_executed","legal_compliance_determined","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "asset_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schedule_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "retention_deadline": {"type":"string","format":"date-time","pattern":"Z$"},
+    "active_hold_digests": {"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[0-9a-f]{64}$"}},
+    "state": {"enum":["eligible","not_due","blocked_by_legal_hold"]},
+    "reason_code": {"type":"string","minLength":1,"maxLength":256},
+    "evaluated_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "deletion_executed": {"const":false},
+    "legal_compliance_determined": {"const":false},
+    "schema_version": {"const":"datagovops.deletion-eligibility-evaluation.v1"}
+  }
+}

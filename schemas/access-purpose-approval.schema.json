@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Access Purpose Approval v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","approval_id","subject_kind","subject_id","subject_role_version","subject_digest","asset_id","asset_version","asset_digest","purpose_id","purpose_version","purpose_digest","purpose_binding_id","purpose_binding_digest","decision","reviewer_id","rationale","evidence_digest","decided_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "approval_id": {"type":"string","minLength":1,"maxLength":256},
+    "subject_kind": {"enum":["principal","role"]},
+    "subject_id": {"type":"string","minLength":1,"maxLength":256},
+    "subject_role_version": {"type":["integer","null"],"minimum":1},
+    "subject_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "asset_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "purpose_id": {"type":"string","minLength":1,"maxLength":256},
+    "purpose_version": {"type":"integer","minimum":1},
+    "purpose_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "purpose_binding_id": {"type":"string","minLength":1,"maxLength":256},
+    "purpose_binding_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "decision": {"enum":["approved","rejected"]},
+    "reviewer_id": {"type":"string","minLength":1,"maxLength":256},
+    "rationale": {"type":"string","minLength":1,"maxLength":2048},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "decided_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "schema_version": {"const":"datagovops.access-purpose-approval.v1"}
+  },
+  "allOf": [
+    {"if":{"properties":{"subject_kind":{"const":"principal"}}},"then":{"properties":{"subject_role_version":{"type":"null"}}}},
+    {"if":{"properties":{"subject_kind":{"const":"role"}}},"then":{"properties":{"subject_role_version":{"type":"integer","minimum":1}}}}
+  ]
+}

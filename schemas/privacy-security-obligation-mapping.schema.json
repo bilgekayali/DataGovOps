@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Privacy Security Obligation Mapping v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","mapping_id","asset_id","asset_version","asset_digest","category","obligation_reference","status","reviewer_id","rationale","location_evidence_digests","evidence_digest","reviewed_at","legal_applicability_determined","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "mapping_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "asset_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "category": {"enum":["privacy","security","data_residency","cross_border","other"]},
+    "obligation_reference": {"type":"string","minLength":1,"maxLength":1024},
+    "status": {"enum":["mapped","explicitly_not_mapped","review_required"]},
+    "reviewer_id": {"type":"string","minLength":1,"maxLength":256},
+    "rationale": {"type":"string","minLength":1,"maxLength":2048},
+    "location_evidence_digests": {"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[0-9a-f]{64}$"}},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "reviewed_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "legal_applicability_determined": {"const":false},
+    "schema_version": {"const":"datagovops.privacy-security-obligation-mapping.v1"}
+  }
+}

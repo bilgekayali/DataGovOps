@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Access Role v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","role_id","role_version","name","owner_id","member_principal_ids","permissions","evidence_digest","registered_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "role_id": {"type":"string","minLength":1,"maxLength":256},
+    "role_version": {"type":"integer","minimum":1},
+    "name": {"type":"string","minLength":1,"maxLength":512},
+    "owner_id": {"type":"string","minLength":1,"maxLength":256},
+    "member_principal_ids": {"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":256}},
+    "permissions": {"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":256}},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "registered_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "schema_version": {"const":"datagovops.access-role.v1"}
+  }
+}

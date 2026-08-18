@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Legal Hold Release v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","release_id","hold_id","hold_digest","released_by_id","rationale","evidence_digest","released_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "release_id": {"type":"string","minLength":1,"maxLength":256},
+    "hold_id": {"type":"string","minLength":1,"maxLength":256},
+    "hold_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "released_by_id": {"type":"string","minLength":1,"maxLength":256},
+    "rationale": {"type":"string","minLength":1,"maxLength":2048},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "released_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "schema_version": {"const":"datagovops.legal-hold-release.v1"}
+  }
+}

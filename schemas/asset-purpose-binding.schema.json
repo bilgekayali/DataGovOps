@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Asset Purpose Binding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","binding_id","asset_id","asset_version","asset_digest","purpose_id","purpose_version","purpose_digest","approval_owner_id","rationale","evidence_digest","bound_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "binding_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "asset_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "purpose_id": {"type":"string","minLength":1,"maxLength":256},
+    "purpose_version": {"type":"integer","minimum":1},
+    "purpose_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "approval_owner_id": {"type":"string","minLength":1,"maxLength":256},
+    "rationale": {"type":"string","minLength":1,"maxLength":1024},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "bound_at": {"type":"string","format":"date-time"},
+    "schema_version": {"const":"datagovops.asset-purpose-binding.v1"}
+  }
+}

@@ -15,25 +15,49 @@ DataAssetRecord ─────┘    DataAssetValidator + GovernancePolicy
                       DataAssetValidationReport
 ```
 
-### Authoritative references
+Asset versions are immutable, contiguous and exact-reference bound. The registry snapshot covers principal, system and full asset-version history.
 
-`GovernancePrincipal` records a governed principal identity. It does not grant permissions or prove that the principal is the legally correct owner.
+## v0.1.2 boundary — semantic classification, CDE and purpose governance
 
-`AuthoritativeSystem` records a governed system identity and an explicit institution-provided `authoritative` state. DataGovOps does not infer that state from technology names or data contents.
+v0.1.2 adds a separate semantic layer rather than mutating the authoritative registry model:
 
-`DataAssetRecord` is versioned. Owner, steward, optional quality owner, classification/criticality decision owners and system-of-record references must resolve exactly in the same institution before the version can be registered.
+```text
+DataAssetRegistry
+      |
+      v
+SemanticGovernanceRegistry
+  |          |          |             |
+DataElement  Classification  CDE Designation  BusinessPurpose
+                                            |
+                                            v
+                                   AssetPurposeBinding
+```
 
-### Immutability and versioning
+### Data elements
 
-Asset versions are contiguous positive integers. Re-registering the exact same version/content is idempotent; different content under an existing identity/version fails closed. New versions preserve prior evidence rather than overwriting it.
+`DataElementRecord` identifies a governed element underneath an exact `institution_id + asset_id + asset_version`. The element owner must resolve to an accountable principal in the same institution. This creates an exact target for later lineage and data-quality rules instead of forcing those controls to operate only at whole-asset granularity.
 
-The institution registry snapshot is a deterministic SHA-256 digest over the registered principal, system and full asset-version history. Validation reports bind to that exact snapshot and become stale if the governed registry later changes.
+### Classification decisions
 
-### Structural policy
+`ClassificationDecision` is explicit evidence for either an asset or data element. Asset-scoped decisions must agree with the classification already recorded on the authoritative asset version; semantic evidence cannot silently rewrite the authoritative inventory. Element-scoped decisions bind to the exact element digest.
 
-`GovernancePolicy` controls institution-owned metadata requirements such as retention-policy presence for personal/restricted data, quality ownership for high-criticality data, authoritative-system requirements for source-of-truth declarations, and optional owner/steward separation.
+Historical classification decisions remain immutable. `assert_classification_current` fails closed when a newer asset version supersedes the decision target.
 
-A successful structural validation means only that the configured metadata requirements are represented. It does not determine lawful basis, privacy compliance, BCBS 239 compliance, data quality, regulatory applicability or semantic correctness.
+### Critical data elements
+
+`CriticalDataElementDesignation` binds a CDE owner, accountable decision owner, rationale and source-evidence digest to an exact governed data-element digest. The designation does not infer criticality from names, schemas or content.
+
+A newer asset version makes the historical CDE designation non-current until corresponding semantic evidence is established for the new version.
+
+### Business purposes
+
+`BusinessPurpose` is independently versioned and owned. `AssetPurposeBinding` explicitly binds an exact asset version to an exact purpose version with approval owner, rationale and evidence digest.
+
+A newer asset version or purpose version makes the prior binding stale. Business-purpose evidence is not a GDPR/KVKK lawful-basis determination and does not by itself establish processing permissibility.
+
+### Semantic snapshot
+
+`SemanticGovernanceRegistry.snapshot_digest` binds the exact underlying `DataAssetRegistry.snapshot_digest` plus data-element, classification, CDE, purpose and purpose-binding artifact digests. The semantic layer therefore cannot be represented as current independently of the authoritative registry evidence it references.
 
 ## Planned v0.1 layers
 

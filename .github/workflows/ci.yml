@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "agent/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Compile package
+        run: python -m compileall -q src
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate JSON Schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          for path in sorted(Path("schemas").glob("*.schema.json")):
+              schema = json.loads(path.read_text(encoding="utf-8"))
+              jsonschema.Draft202012Validator.check_schema(schema)
+              print(path)
+          PY
+      - name: Enforce offline data-governance core
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          banned = {"asyncio", "http", "requests", "socket", "subprocess", "urllib"}
+          paths = [
+              Path("src/datagovops/models.py"),
+              Path("src/datagovops/registry.py"),
+              Path("src/datagovops/validation.py"),
+          ]
+          for path in paths:
+              tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      roots = {alias.name.split(".")[0] for alias in node.names}
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      roots = {node.module.split(".")[0]}
+                  else:
+                      continue
+                  if roots & banned:
+                      raise SystemExit(f"{path}: forbidden capability import")
+          PY
+
+  package-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build wheel
+        run: python -m pip install build && python -m build --wheel
+      - name: Clean-wheel smoke
+        run: |
+          python -m venv /tmp/datagovops-smoke
+          /tmp/datagovops-smoke/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-smoke/bin/python - <<'PY'
+          import datagovops
+          from datagovops import DataAssetRegistry, DataAssetValidator
+
+          assert datagovops.__version__ == "0.1.0.dev1"
+          assert DataAssetRegistry is not None
+          assert DataAssetValidator is not None
+          print(datagovops.__version__)
+          PY

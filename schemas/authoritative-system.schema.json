@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datagovops.dev/schemas/authoritative-system.schema.json",
+  "title": "DataGovOps Authoritative System v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "institution_id", "system_id", "name", "owner_id", "system_type", "authoritative", "registered_at"],
+  "properties": {
+    "schema_version": {"const": "datagovops.authoritative-system.v1"},
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "system_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "name": {"type": "string", "minLength": 1, "maxLength": 512},
+    "owner_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "system_type": {"type": "string", "minLength": 1, "maxLength": 256},
+    "authoritative": {"type": "boolean"},
+    "registered_at": {"type": "string", "format": "date-time"}
+  }
+}

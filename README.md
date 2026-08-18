@@ -4,29 +4,76 @@
 
 ## Summary
 
-DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, lineage, purpose, quality, access, retention, and evidence controls.
+DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, purpose, quality, access, retention, privacy/security obligations, and verifiable evidence.
 
-The project is intended for regulated and high-assurance environments. It is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, or substitute for accountable data owners and stewards.
+Current development milestone: **v0.1.1 — authoritative data asset inventory and accountability contracts** (`0.1.0.dev1`).
 
-## Purpose
+The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, or substitute for accountable data owners, stewards, security/privacy teams, and legal review.
 
-Financial institutions need to prove not only where data is stored, but where it came from, who owns it, what purpose it serves, how sensitive and critical it is, which transformations affect it, who may use it, and how long it should be retained.
+## Current executable boundary
 
-DataGovOps will model those governance relationships as deterministic, machine-readable evidence.
+The first v0.1 tranche establishes the evidence substrate that later governance layers depend on:
 
-## Initial standards posture
+- institution-scoped accountable-principal registry;
+- institution-scoped source/system registry with explicit authoritative-state metadata;
+- immutable, contiguous data-asset version history;
+- exact owner, steward, quality-owner, classification-decision-owner, criticality-decision-owner and system-of-record references;
+- explicit sensitivity classification and business criticality decisions with accountable owner and rationale;
+- explicit personal-data and source-of-truth indicators without content inspection or inference;
+- institution-owned structural completeness policy;
+- deterministic canonical JSON and SHA-256 artifact/snapshot evidence;
+- validation reports bound to the exact registry snapshot so later registry change makes prior evidence stale;
+- strict Draft 2020-12 JSON Schemas;
+- Python 3.11/3.12/3.13 CI, schema validation, offline-capability guard, wheel build and clean-wheel smoke.
 
-Design inputs include:
+```text
+GovernancePrincipal ─┐
+AuthoritativeSystem ─┼─> DataAssetRegistry ─> exact registry snapshot
+DataAssetRecord ─────┘            |
+                                  v
+                         DataAssetValidator
+                                  |
+                                  v
+                      DataAssetValidationReport
+```
 
-- BCBS 239 — Principles for effective risk data aggregation and risk reporting: https://www.bis.org/publ/bcbs239.htm
-- Basel Committee 2026 implementation observations on BCBS 239: https://www.bis.org/publ/bcbs_nl36.htm
-- Regulation (EU) 2016/679 — General Data Protection Regulation: https://eur-lex.europa.eu/eli/reg/2016/679/oj?locale=EN
+A structurally complete report means only that the configured institution-owned metadata controls are represented for that exact governed state. It is not a legal or regulatory compliance conclusion.
 
-These references inform the architecture; DataGovOps does not certify regulatory compliance or determine legal basis automatically.
+## v0.1 foundation sequence
 
-## Roadmap direction
+`#3 inventory/accountability → #4 classification/CDE/purpose → #5 lineage/provenance → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
 
-`v0.1 governed data asset registry → v0.2 lineage & transformations → v0.3 purpose/access governance → v0.4 quality & critical data elements → v0.5 retention & privacy evidence → v0.6 risk-data aggregation assurance → v0.7 tenant/crypto hardening → v0.8 production reference → v1.0 stable release`
+The package remains a development build until #8. Completion of #3 through #8 is the proposed **DataGovOps v0.1.0 foundation release**.
+
+## Standards posture
+
+Design mappings are intended to support evidence/control alignment with:
+
+- BCBS 239 risk-data aggregation and reporting governance principles;
+- Basel Committee implementation observations on BCBS 239;
+- GDPR and KVKK privacy/accountability concepts;
+- ISO/IEC 27001 and ISO/IEC 27701 control/evidence concepts;
+- DAMA-aligned governance concepts;
+- relevant BDDK, SPK and institution-owned data-governance requirements.
+
+These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer data ownership, establish regulatory applicability, or prove that data is accurate simply because metadata is present.
+
+## Explicit non-claims
+
+DataGovOps does **not** by itself establish:
+
+- BCBS 239, GDPR, KVKK, BDDK, SPK, ISO/IEC 27001 or ISO/IEC 27701 compliance;
+- lawful basis or permitted processing purpose;
+- correctness of owner/steward assignments;
+- correctness of source-of-truth or authoritative-system declarations;
+- data quality, completeness, accuracy or fitness for regulatory reporting;
+- deletion completion or legal-hold satisfaction;
+- access authorization sufficiency;
+- complete lineage or provenance before the relevant later tranche is implemented.
+
+## Roadmap
+
+See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## License
 

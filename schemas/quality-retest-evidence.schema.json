@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"DataGovOps Quality Retest Evidence v1","type":"object","additionalProperties":false,
+  "required":["institution_id","retest_id","finding_digest","remediation_digest","evaluation_digest","reviewer_id","outcome","retested_at","evidence_digest","schema_version"],
+  "properties":{
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "retest_id":{"type":"string","minLength":1,"maxLength":256},
+    "finding_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "remediation_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "evaluation_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "reviewer_id":{"type":"string","minLength":1,"maxLength":256},
+    "outcome":{"enum":["passed","failed"]},
+    "retested_at":{"type":"string","format":"date-time"},
+    "evidence_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schema_version":{"const":"datagovops.quality-retest-evidence.v1"}
+  }
+}

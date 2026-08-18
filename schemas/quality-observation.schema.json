@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"DataGovOps Quality Observation v1","type":"object","additionalProperties":false,
+  "required":["institution_id","observation_id","rule_id","rule_version","rule_digest","target_digest","observed_value","source_system_id","measured_at","recorded_at","evidence_digest","schema_version"],
+  "properties":{
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "observation_id":{"type":"string","minLength":1,"maxLength":256},
+    "rule_id":{"type":"string","minLength":1,"maxLength":256},
+    "rule_version":{"type":"integer","minimum":1},
+    "rule_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "target_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "observed_value":{"type":"integer"},
+    "source_system_id":{"type":"string","minLength":1,"maxLength":256},
+    "measured_at":{"type":"string","format":"date-time"},
+    "recorded_at":{"type":"string","format":"date-time"},
+    "evidence_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schema_version":{"const":"datagovops.quality-observation.v1"}
+  }
+}

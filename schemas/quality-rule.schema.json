@@ -1,0 +1,22 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"DataGovOps Quality Rule v1","type":"object","additionalProperties":false,
+  "required":["institution_id","rule_id","rule_version","target","dimension","owner_id","metric_name","measurement_unit","comparison_operator","threshold_value","max_age_seconds","finding_severity","evidence_digest","registered_at","schema_version"],
+  "properties":{
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "rule_id":{"type":"string","minLength":1,"maxLength":256},
+    "rule_version":{"type":"integer","minimum":1},
+    "target":{"type":"object","additionalProperties":false,"required":["institution_id","kind","asset_id","asset_version","element_id","target_digest","schema_version"],"properties":{"institution_id":{"type":"string","minLength":1,"maxLength":256},"kind":{"enum":["asset","critical_data_element"]},"asset_id":{"type":"string","minLength":1,"maxLength":256},"asset_version":{"type":"integer","minimum":1},"element_id":{"type":["string","null"],"minLength":1,"maxLength":256},"target_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},"schema_version":{"const":"datagovops.quality-target-ref.v1"}},"allOf":[{"if":{"properties":{"kind":{"const":"asset"}}},"then":{"properties":{"element_id":{"type":"null"}}}},{"if":{"properties":{"kind":{"const":"critical_data_element"}}},"then":{"properties":{"element_id":{"type":"string","minLength":1,"maxLength":256}}}}]},
+    "dimension":{"enum":["completeness","accuracy","validity","consistency","timeliness","uniqueness","integrity","other"]},
+    "owner_id":{"type":"string","minLength":1,"maxLength":256},
+    "metric_name":{"type":"string","minLength":1,"maxLength":256},
+    "measurement_unit":{"type":"string","minLength":1,"maxLength":256},
+    "comparison_operator":{"enum":["gte","lte","gt","lt","eq"]},
+    "threshold_value":{"type":"integer"},
+    "max_age_seconds":{"type":"integer","minimum":1},
+    "finding_severity":{"enum":["low","medium","high","critical"]},
+    "evidence_digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "registered_at":{"type":"string","format":"date-time"},
+    "schema_version":{"const":"datagovops.quality-rule.v1"}
+  }
+}

@@ -1,48 +1,50 @@
 # DataGovOps
 
-**Evidence-backed data governance, lineage, classification, quality, and accountability for regulated financial institutions.**
+**Evidence-backed data governance, lineage, classification, quality, access, retention, and accountability for regulated financial institutions.**
 
 ## Summary
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, purpose, quality, access, retention, privacy/security obligations, and verifiable evidence.
 
-Current development milestone: **v0.1.4 — data quality rules, observations, findings and remediation evidence** (`0.1.0.dev4`).
+Current development milestone: **v0.1.5 — access-purpose, retention, legal-hold and privacy/security obligation evidence** (`0.1.0.dev5`).
 
-The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, or substitute for accountable data owners, stewards, security/privacy teams, engineers, and legal review.
+The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, IAM/PAM replacement, deletion engine, or substitute for accountable data owners, stewards, security/privacy teams, engineers, and legal review.
 
 ## Current executable boundary
 
-The authoritative, semantic and lineage layers remain intact. v0.1.4 adds deterministic data-quality governance:
+The authoritative, semantic, lineage and quality layers remain intact. v0.1.5 adds explicit access/retention/obligation governance:
 
-- exact quality targets bound to a governed asset version or explicit Critical Data Element designation;
-- versioned `QualityRule` artifacts with accountable owner, dimension, metric/unit, comparison operator, threshold, freshness window and finding severity;
-- versioned institution-owned `QualityEvaluationPolicy` controlling missing/stale observation treatment without allowing missing/stale evidence to become PASS;
-- immutable `QualityObservation` evidence bound to exact rule/target digests and source-system identity;
-- deterministic `passed / breached / incomplete` evaluation with explicit reason codes;
-- fail-closed conflicting-latest observation handling;
-- findings whose severity cannot silently downgrade the configured rule severity;
-- remediation evidence and retest evidence bound to exact finding/evaluation history;
-- independent reviewer requirement for HIGH/CRITICAL retest closure;
-- deterministic finding resolution with retained remediation/retest evidence history;
-- current-state failure when a newer asset/CDE or quality-rule/policy version supersedes the represented state;
-- quality snapshots bound to exact authoritative and semantic governance snapshots;
+- versioned `AccessRole` evidence bound to governed principals and permissions;
+- explicit `AccessPurposeApproval` evidence bound to an exact subject, asset version, business-purpose version and approved asset-purpose binding;
+- `AccessGrant` evidence that cannot exceed governed role permissions and becomes non-current when role, asset, purpose or latest access-purpose decision changes;
+- deterministic conflict detection for equally-latest contradictory access-purpose approvals;
+- versioned `RetentionSchedule` evidence bound to exact asset versions;
+- immutable `LegalHold` plus separate release evidence;
+- deterministic deletion-eligibility evaluation where an active hold blocks eligibility;
+- deletion eligibility explicitly does **not** represent deletion execution or legal compliance;
+- `DataLocationEvidence` with explicit storage/processing/backup/transfer location and cross-border flag;
+- privacy/security/data-residency/cross-border obligation mappings with accountable review and exact location-evidence binding;
+- cross-border mappings that require explicit represented cross-border location evidence;
+- institution-owned `GovernanceControlPolicy` and deterministic missing/stale gap reports;
+- stale access grants, retention schedules, obligation mappings and location evidence fail closed in current-state reporting;
 - strict Draft 2020-12 JSON Schemas and Python 3.11/3.12/3.13 CI;
 - offline-capability guard, wheel build and clean-wheel smoke.
 
 ```text
-DataAssetRegistry ───────────┐
-                            ├─> QualityRegistry
-SemanticGovernanceRegistry ─┘      |
-                                   ├─ Rule + EvaluationPolicy
-                                   ├─ Observation -> Evaluation
-                                   └─ Finding -> Remediation -> Retest -> Resolution
+DataAssetRegistry ────────────────┐
+                                 ├─> AccessRetentionPrivacyRegistry
+SemanticGovernanceRegistry ──────┘          |
+                                            ├─ Role -> Purpose Approval -> Grant
+                                            ├─ Retention -> Hold/Release -> Eligibility
+                                            ├─ Location -> Obligation Mapping
+                                            └─ Institution Policy -> Deterministic Gap Report
 ```
 
-A `passed` quality evaluation means only that the selected fresh governed observation satisfied the exact configured rule/threshold at the represented time. It does **not** prove that the data is objectively accurate, complete, fit for regulatory reporting, or BCBS 239 compliant.
+Business-purpose, obligation and location metadata are accountable institutional inputs. They are deliberately **not** converted into GDPR/KVKK lawful-basis determinations or automatic legal/regulatory applicability conclusions.
 
 ## v0.1 foundation sequence
 
-`#3 inventory/accountability ✓ → #4 classification/CDE/purpose ✓ → #5 lineage/provenance ✓ → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
+`#3 inventory/accountability ✓ → #4 classification/CDE/purpose ✓ → #5 lineage/provenance ✓ → #6 quality/remediation ✓ → #7 access/retention/privacy → #8 dossier/release gate`
 
 The package remains a development build until #8. Completion of #3 through #8 is the proposed **DataGovOps v0.1.0 foundation release**.
 
@@ -57,7 +59,7 @@ Design mappings are intended to support evidence/control alignment with:
 - DAMA-aligned governance concepts;
 - relevant BDDK, SPK and institution-owned data-governance requirements.
 
-These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer data ownership, establish regulatory applicability, or prove that data is accurate simply because metadata or quality evidence is present.
+These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer data ownership, establish regulatory applicability, or prove that data is accurate simply because metadata or governance evidence is present.
 
 ## Explicit non-claims
 
@@ -70,9 +72,10 @@ DataGovOps does **not** by itself establish:
 - semantic correctness or completeness of lineage beyond configured explicit requirements;
 - correctness of transformation code or configuration merely because digests are bound;
 - objective data accuracy, completeness, consistency, timeliness, uniqueness or fitness for regulatory reporting;
-- deletion completion or legal-hold satisfaction;
-- access authorization sufficiency;
-- regulator acceptance or legal applicability.
+- sufficiency of an access authorization or IAM enforcement;
+- deletion execution, deletion completion, or legal-hold legal sufficiency;
+- legal/regulatory applicability of privacy/security obligation mappings;
+- regulator acceptance or production fitness.
 
 ## Roadmap
 

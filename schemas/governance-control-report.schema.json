@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Governance Control Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","policy_digest","asset_registry_snapshot_digest","semantic_governance_snapshot_digest","control_snapshot_digest","gaps","complete","evaluated_at","legal_compliance_determined","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "policy_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "asset_registry_snapshot_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "semantic_governance_snapshot_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "control_snapshot_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "gaps": {
+      "type":"array",
+      "items": {
+        "type":"object",
+        "additionalProperties": false,
+        "required": ["code","asset_id","reference_id"],
+        "properties": {
+          "code": {"enum":["stale_access_grant","missing_retention_schedule","stale_retention_schedule","missing_obligation_mapping","stale_obligation_mapping","missing_location_evidence","stale_location_evidence"]},
+          "asset_id": {"type":"string","minLength":1,"maxLength":256},
+          "reference_id": {"anyOf":[{"type":"string","minLength":1,"maxLength":256},{"type":"null"}]}
+        }
+      }
+    },
+    "complete": {"type":"boolean"},
+    "evaluated_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "legal_compliance_determined": {"const":false},
+    "schema_version": {"const":"datagovops.governance-control-report.v1"}
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Transformation Record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","transformation_id","transformation_version","name","owner_id","execution_system_id","code_digest","config_digest","evidence_digest","registered_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "transformation_id": {"type":"string","minLength":1,"maxLength":256},
+    "transformation_version": {"type":"integer","minimum":1},
+    "name": {"type":"string","minLength":1,"maxLength":512},
+    "owner_id": {"type":"string","minLength":1,"maxLength":256},
+    "execution_system_id": {"type":"string","minLength":1,"maxLength":256},
+    "code_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "config_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "registered_at": {"type":"string","format":"date-time"},
+    "schema_version": {"const":"datagovops.transformation-record.v1"}
+  }
+}

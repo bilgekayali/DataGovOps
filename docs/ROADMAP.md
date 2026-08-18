@@ -49,18 +49,21 @@
 - [x] strict schemas and dev5 CI boundary.
 
 ### v0.1.6 — Governance dossier, CLI and release gate (#8)
-- [ ] deterministic dossier over the complete governed state;
-- [ ] gaps/exceptions/revalidation-required state;
-- [ ] offline integrity/tamper verification;
-- [ ] digest/schema/dossier CLI;
-- [ ] wheel/release evidence and v0.1.0 package boundary.
+- [x] deterministic dossier over the complete governed state;
+- [x] explicit gaps, exceptions and revalidation-required state;
+- [x] embedded artifact/domain snapshot cross-binding and offline tamper verification;
+- [x] strict artifact type/domain/schema semantic verification;
+- [x] canonical digest, Draft 2020-12 schema and dossier-verification CLI;
+- [x] Python 3.11/3.12/3.13 CI, wheel and clean-wheel CLI smoke;
+- [x] `0.1.0` package/code boundary and explicit publication non-claim.
 
-Completion of #3 through #8 constitutes the proposed **DataGovOps v0.1.0 foundation release**.
+Completion of #3 through #8 constitutes the proposed **DataGovOps v0.1.0 foundation code/package release boundary**. A Git tag or GitHub Release is a separate publication action and must be verified independently.
 
 ## Later hardening toward v1
 
 - BCBS 239 risk-data aggregation assurance mappings and evidence;
 - PostgreSQL tenant isolation/RLS and institution-owned cryptographic boundaries;
+- institution-owned signing keys, external immutable anchors and trusted timestamping;
 - immutable audit/recovery evidence;
 - deployment, supply-chain and release hardening;
 - stable API/data compatibility policy and v1 production reference.

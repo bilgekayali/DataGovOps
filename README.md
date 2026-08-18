@@ -6,46 +6,43 @@
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, purpose, quality, access, retention, privacy/security obligations, and verifiable evidence.
 
-Current development milestone: **v0.1.2 — classification, critical data element and business-purpose evidence** (`0.1.0.dev2`).
+Current development milestone: **v0.1.3 — data lineage, transformation and provenance evidence** (`0.1.0.dev3`).
 
-The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, or substitute for accountable data owners, stewards, security/privacy teams, and legal review.
+The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, or substitute for accountable data owners, stewards, security/privacy teams, engineers, and legal review.
 
 ## Current executable boundary
 
-The v0.1.1 foundation remains intact and v0.1.2 adds a semantic governance layer bound to exact governed versions:
+The v0.1.1 authoritative registry and v0.1.2 semantic layer remain intact. v0.1.3 adds deterministic lineage/provenance governance:
 
-- institution-scoped accountable principals and authoritative systems;
-- immutable, contiguous data-asset version history;
-- exact owner/steward/system-of-record references and deterministic asset-registry snapshots;
-- governed `DataElementRecord` identity under an exact asset version;
-- explicit asset- or data-element-scoped `ClassificationDecision` artifacts;
-- asset-level classification decisions that must agree with the registered asset classification instead of silently overriding it;
-- explicit `CriticalDataElementDesignation` evidence bound to an exact data-element digest;
-- versioned `BusinessPurpose` artifacts with accountable owner;
-- explicit `AssetPurposeBinding` approval evidence bound to exact asset and purpose versions;
-- current-state checks that fail closed when a newer asset or purpose version makes historical semantic evidence stale;
-- deterministic semantic snapshot digest over the exact underlying asset-registry snapshot and semantic artifacts;
-- strict runtime enum/boolean/integer/digest contracts;
-- strict Draft 2020-12 JSON Schemas for data element, classification, CDE, business purpose and purpose binding artifacts;
-- Python 3.11/3.12/3.13 CI, schema validation, offline-capability guard, wheel build and clean-wheel smoke.
+- institution-scoped accountable principals, authoritative systems and immutable data-asset versions;
+- exact data-element identities and semantic classification/CDE/business-purpose evidence;
+- `LineageEndpointRef` for exact asset- or data-element-version targets with digest binding;
+- versioned `TransformationRecord` with accountable owner, execution system, code digest, config digest and source-evidence digest;
+- `LineageEdge` with exact source/target endpoints, transformation version/digest, producer system, consumer system and evidence digest;
+- asset-to-asset, data-element-to-data-element and mixed-granularity lineage;
+- directed-cycle rejection at registration time;
+- fail-closed dangling, cross-institution, digest-mismatch and stale endpoint/transformation state;
+- explicit `LineageCompletenessRequirement` artifacts rather than inferred completeness criteria;
+- deterministic `LineageCompletenessReport` with missing/stale requirement sets;
+- lineage snapshots bound to both the authoritative asset-registry snapshot and semantic-governance snapshot;
+- strict Draft 2020-12 JSON Schemas and Python 3.11/3.12/3.13 CI;
+- offline-capability guard, wheel build and clean-wheel smoke.
 
 ```text
-DataAssetRegistry (exact asset versions)
-             |
-             v
-SemanticGovernanceRegistry
-   |        |        |        |
- elements  class.   CDEs   purposes/bindings
-             |
-             v
- exact semantic governance snapshot
+DataAssetRegistry ───────┐
+                        ├─> LineageRegistry
+SemanticGovernance ─────┘       |
+                                ├─ TransformationRecord
+                                ├─ LineageEdge
+                                ├─ CompletenessRequirement
+                                └─ CompletenessReport
 ```
 
-Business-purpose metadata is an accountable institutional-purpose record. It is deliberately **not** treated as GDPR/KVKK lawful-basis evidence or an automatic legal-permissibility conclusion.
+Lineage completeness is evaluated only against explicit institution-owned requirements. An empty requirement set is **not** treated as proof that lineage is complete.
 
 ## v0.1 foundation sequence
 
-`#3 inventory/accountability ✓ → #4 classification/CDE/purpose → #5 lineage/provenance → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
+`#3 inventory/accountability ✓ → #4 classification/CDE/purpose ✓ → #5 lineage/provenance → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
 
 The package remains a development build until #8. Completion of #3 through #8 is the proposed **DataGovOps v0.1.0 foundation release**.
 
@@ -70,10 +67,12 @@ DataGovOps does **not** by itself establish:
 - lawful basis or legal permissibility of a represented business purpose;
 - correctness of owner/steward/classification/CDE assignments;
 - correctness of source-of-truth or authoritative-system declarations;
+- semantic correctness or completeness of lineage beyond configured explicit requirements;
+- correctness of transformation code or configuration merely because digests are bound;
 - data quality, completeness, accuracy or fitness for regulatory reporting;
 - deletion completion or legal-hold satisfaction;
 - access authorization sufficiency;
-- complete lineage or provenance before the relevant later tranche is implemented.
+- regulator acceptance or legal applicability.
 
 ## Roadmap
 

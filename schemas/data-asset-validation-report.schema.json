@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datagovops.dev/schemas/data-asset-validation-report.schema.json",
+  "title": "DataGovOps Data Asset Validation Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "institution_id",
+    "asset_id",
+    "asset_version",
+    "asset_digest",
+    "policy_digest",
+    "registry_snapshot_digest",
+    "structurally_complete",
+    "error_codes",
+    "warning_codes",
+    "validated_at",
+    "regulatory_compliance_determined"
+  ],
+  "properties": {
+    "schema_version": {"const": "datagovops.data-asset-validation-report.v1"},
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "asset_version": {"type": "integer", "minimum": 1},
+    "asset_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "registry_snapshot_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "structurally_complete": {"type": "boolean"},
+    "error_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "warning_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "validated_at": {"type": "string", "format": "date-time"},
+    "regulatory_compliance_determined": {"const": false}
+  }
+}

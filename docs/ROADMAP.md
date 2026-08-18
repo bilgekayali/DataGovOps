@@ -21,10 +21,13 @@
 - [x] deterministic semantic snapshot and strict schemas.
 
 ### v0.1.3 — Lineage, transformation and provenance (#5)
-- [ ] source/target asset- and data-element-version lineage;
-- [ ] transformation identity, owner and code/config digest;
-- [ ] producer/consumer/system relationships;
-- [ ] lineage snapshot and completeness gaps.
+- [x] source/target asset- and data-element-version lineage;
+- [x] mixed-granularity exact endpoint references and digest binding;
+- [x] versioned transformation identity, owner, execution system and code/config/evidence digests;
+- [x] producer/consumer/system relationships;
+- [x] directed-cycle, dangling, cross-institution and stale-reference controls;
+- [x] deterministic lineage snapshot and explicit completeness gap reports;
+- [x] strict schemas and Python 3.11/3.12/3.13 CI boundary.
 
 ### v0.1.4 — Data quality and remediation evidence (#6)
 - [ ] quality rules, dimensions and thresholds;

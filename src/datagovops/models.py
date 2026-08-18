@@ -195,6 +195,7 @@ class DataAssetRecord:
     schema_version: str = "datagovops.data-asset-record.v1"
 
     def __post_init__(self) -> None:
+        rationale_fields = {"classification_rationale", "criticality_rationale"}
         for field in (
             "institution_id",
             "asset_id",
@@ -209,11 +210,13 @@ class DataAssetRecord:
             "criticality_rationale",
             "schema_version",
         ):
-            object.__setattr__(
-                self,
-                field,
-                _text(field, getattr(self, field), limit=512 if field == "name" else 1024),
-            )
+            if field == "name":
+                limit = 512
+            elif field in rationale_fields:
+                limit = 1024
+            else:
+                limit = 256
+            object.__setattr__(self, field, _text(field, getattr(self, field), limit=limit))
         _positive_int("asset_version", self.asset_version)
         _enum("classification", self.classification, DataClassification)
         _enum("criticality", self.criticality, DataCriticality)
@@ -290,6 +293,8 @@ class DataAssetValidationReport:
             raise GovernanceError("error_codes must be unique")
         if len(set(self.warning_codes)) != len(self.warning_codes):
             raise GovernanceError("warning_codes must be unique")
+        if set(self.error_codes) & set(self.warning_codes):
+            raise GovernanceError("validation code cannot be both error and warning")
         for code in self.error_codes + self.warning_codes:
             _text("validation code", code)
         object.__setattr__(self, "validated_at", _timestamp("validated_at", self.validated_at))

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Lineage Completeness Requirement v1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["institution_id","kind","asset_id","asset_version","element_id","target_digest","schema_version"],
+      "properties": {
+        "institution_id": {"type":"string","minLength":1,"maxLength":256},
+        "kind": {"enum":["asset","data_element"]},
+        "asset_id": {"type":"string","minLength":1,"maxLength":256},
+        "asset_version": {"type":"integer","minimum":1},
+        "element_id": {"type":["string","null"],"minLength":1,"maxLength":256},
+        "target_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "schema_version": {"const":"datagovops.lineage-endpoint-ref.v1"}
+      },
+      "allOf": [
+        {"if":{"properties":{"kind":{"const":"asset"}}},"then":{"properties":{"element_id":{"type":"null"}}}},
+        {"if":{"properties":{"kind":{"const":"data_element"}}},"then":{"properties":{"element_id":{"type":"string","minLength":1,"maxLength":256}}}}
+      ]
+    }
+  },
+  "required": ["institution_id","requirement_id","target","owner_id","rationale","evidence_digest","registered_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "requirement_id": {"type":"string","minLength":1,"maxLength":256},
+    "target": {"$ref":"#/$defs/endpoint"},
+    "owner_id": {"type":"string","minLength":1,"maxLength":256},
+    "rationale": {"type":"string","minLength":1,"maxLength":1024},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "registered_at": {"type":"string","format":"date-time"},
+    "schema_version": {"const":"datagovops.lineage-completeness-requirement.v1"}
+  }
+}

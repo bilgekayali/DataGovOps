@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Lineage Edge v1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["institution_id","kind","asset_id","asset_version","element_id","target_digest","schema_version"],
+      "properties": {
+        "institution_id": {"type":"string","minLength":1,"maxLength":256},
+        "kind": {"enum":["asset","data_element"]},
+        "asset_id": {"type":"string","minLength":1,"maxLength":256},
+        "asset_version": {"type":"integer","minimum":1},
+        "element_id": {"type":["string","null"],"minLength":1,"maxLength":256},
+        "target_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "schema_version": {"const":"datagovops.lineage-endpoint-ref.v1"}
+      },
+      "allOf": [
+        {"if":{"properties":{"kind":{"const":"asset"}}},"then":{"properties":{"element_id":{"type":"null"}}}},
+        {"if":{"properties":{"kind":{"const":"data_element"}}},"then":{"properties":{"element_id":{"type":"string","minLength":1,"maxLength":256}}}}
+      ]
+    }
+  },
+  "required": ["institution_id","edge_id","source","target","relationship","transformation_id","transformation_version","transformation_digest","producer_system_id","consumer_system_id","evidence_digest","recorded_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "edge_id": {"type":"string","minLength":1,"maxLength":256},
+    "source": {"$ref":"#/$defs/endpoint"},
+    "target": {"$ref":"#/$defs/endpoint"},
+    "relationship": {"enum":["derived_from","copied_from","aggregated_from","joined_from","filtered_from","transformed_from","replicated_from","other"]},
+    "transformation_id": {"type":"string","minLength":1,"maxLength":256},
+    "transformation_version": {"type":"integer","minimum":1},
+    "transformation_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "producer_system_id": {"type":"string","minLength":1,"maxLength":256},
+    "consumer_system_id": {"type":"string","minLength":1,"maxLength":256},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "recorded_at": {"type":"string","format":"date-time"},
+    "schema_version": {"const":"datagovops.lineage-edge.v1"}
+  }
+}

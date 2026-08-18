@@ -60,6 +60,7 @@ class DataGovCoreTests(unittest.TestCase):
         steward="steward-1",
         source_of_truth=True,
         name="Customer Balance",
+        classification=DataClassification.RESTRICTED,
     ):
         return DataAssetRecord(
             institution_id=institution,
@@ -70,7 +71,7 @@ class DataGovCoreTests(unittest.TestCase):
             owner_id=owner,
             steward_id=steward,
             system_of_record_id="core-banking",
-            classification=DataClassification.RESTRICTED,
+            classification=classification,
             classification_decision_owner_id="classification-owner",
             classification_rationale="Contains sensitive customer financial data.",
             criticality=DataCriticality.HIGH,
@@ -120,7 +121,10 @@ class DataGovCoreTests(unittest.TestCase):
         self.assertEqual(registry.register_asset(v1), v1.artifact_digest)
         self.assertEqual(registry.register_asset(v1), v1.artifact_digest)
         registry.register_asset(v2)
-        self.assertEqual([item.asset_version for item in registry.history("bank-a", "customer-balance")], [1, 2])
+        self.assertEqual(
+            [item.asset_version for item in registry.history("bank-a", "customer-balance")],
+            [1, 2],
+        )
         self.assertEqual(registry.latest_asset("bank-a", "customer-balance"), v2)
 
         with self.assertRaises(GovernanceError):
@@ -133,8 +137,7 @@ class DataGovCoreTests(unittest.TestCase):
         with self.assertRaises(GovernanceError):
             registry.register_asset(self.asset(owner="unknown-owner"))
 
-        other = self.principal("foreign-owner", "bank-b")
-        registry.register_principal(other)
+        registry.register_principal(self.principal("foreign-owner", "bank-b"))
         with self.assertRaises(GovernanceError):
             registry.register_asset(self.asset(owner="foreign-owner"))
 
@@ -174,12 +177,7 @@ class DataGovCoreTests(unittest.TestCase):
         with self.assertRaises(GovernanceError):
             self.asset(version=True)
         with self.assertRaises(GovernanceError):
-            DataAssetRecord(
-                **{
-                    **self.asset().__dict__,
-                    "classification": "restricted",
-                }
-            )
+            self.asset(classification="restricted")
         with self.assertRaises(GovernanceError):
             GovernancePolicy(
                 institution_id="bank-a",

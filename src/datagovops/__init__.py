@@ -1,5 +1,27 @@
 """DataGovOps governed-data core."""
 
+from .access_retention import (
+    AccessApprovalDecision,
+    AccessGrant,
+    AccessPurposeApproval,
+    AccessRetentionPrivacyRegistry,
+    AccessRole,
+    AccessSubjectKind,
+    DataLocationEvidence,
+    DataLocationKind,
+    DeletionEligibilityEvaluation,
+    DeletionEligibilityState,
+    GovernanceControlPolicy,
+    GovernanceControlReport,
+    GovernanceGap,
+    GovernanceGapCode,
+    LegalHold,
+    LegalHoldRelease,
+    ObligationCategory,
+    ObligationMappingStatus,
+    PrivacySecurityObligationMapping,
+    RetentionSchedule,
+)
 from .lineage import (
     LineageCompletenessReport,
     LineageCompletenessRequirement,
@@ -56,6 +78,12 @@ from .semantic import (
 from .validation import DataAssetValidator, assert_validation_report_current
 
 __all__ = [
+    "AccessApprovalDecision",
+    "AccessGrant",
+    "AccessPurposeApproval",
+    "AccessRetentionPrivacyRegistry",
+    "AccessRole",
+    "AccessSubjectKind",
     "AssetPurposeBinding",
     "AuthoritativeSystem",
     "BusinessPurpose",
@@ -70,12 +98,22 @@ __all__ = [
     "DataClassification",
     "DataCriticality",
     "DataElementRecord",
+    "DataLocationEvidence",
+    "DataLocationKind",
+    "DeletionEligibilityEvaluation",
+    "DeletionEligibilityState",
     "EvidenceTreatment",
     "FindingResolutionState",
     "FindingSeverity",
+    "GovernanceControlPolicy",
+    "GovernanceControlReport",
     "GovernanceError",
+    "GovernanceGap",
+    "GovernanceGapCode",
     "GovernancePolicy",
     "GovernancePrincipal",
+    "LegalHold",
+    "LegalHoldRelease",
     "LineageCompletenessReport",
     "LineageCompletenessRequirement",
     "LineageEdge",
@@ -83,7 +121,10 @@ __all__ = [
     "LineageEndpointRef",
     "LineageRegistry",
     "LineageRelationship",
+    "ObligationCategory",
+    "ObligationMappingStatus",
     "PrincipalType",
+    "PrivacySecurityObligationMapping",
     "QualityDimension",
     "QualityEvaluationPolicy",
     "QualityEvaluationState",
@@ -97,6 +138,7 @@ __all__ = [
     "QualityRuleEvaluation",
     "QualityTargetKind",
     "QualityTargetRef",
+    "RetentionSchedule",
     "RetestOutcome",
     "SemanticGovernanceRegistry",
     "TransformationRecord",
@@ -105,4 +147,4 @@ __all__ = [
     "digest_artifact",
 ]
 
-__version__ = "0.1.0.dev4"
+__version__ = "0.1.0.dev5"

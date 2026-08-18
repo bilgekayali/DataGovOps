@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Data Location Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","location_id","asset_id","asset_version","asset_digest","location_kind","country_code","region","cross_border","reviewer_id","evidence_digest","observed_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "location_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_id": {"type":"string","minLength":1,"maxLength":256},
+    "asset_version": {"type":"integer","minimum":1},
+    "asset_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "location_kind": {"enum":["storage","processing","backup","transfer_destination","other"]},
+    "country_code": {"type":"string","pattern":"^[A-Z]{2}$"},
+    "region": {"anyOf":[{"type":"string","minLength":1,"maxLength":256},{"type":"null"}]},
+    "cross_border": {"type":"boolean"},
+    "reviewer_id": {"type":"string","minLength":1,"maxLength":256},
+    "evidence_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "observed_at": {"type":"string","format":"date-time","pattern":"Z$"},
+    "schema_version": {"const":"datagovops.data-location-evidence.v1"}
+  }
+}

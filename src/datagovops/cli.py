@@ -8,8 +8,8 @@ import sys
 import jsonschema
 
 from . import __version__
-from .dossier import verify_dossier_document
-from .models import GovernanceError, canonical_json, digest_artifact
+from .dossier_verify import verify_dossier_document
+from .models import GovernanceError, digest_artifact
 
 
 def _load_json(path: str):
@@ -75,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return int(args.func(args))
-    except (GovernanceError, OSError, ValueError) as exc:
+    except (GovernanceError, OSError, TypeError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 

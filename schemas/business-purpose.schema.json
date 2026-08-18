@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Business Purpose v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","purpose_id","purpose_version","name","description","owner_id","registered_at","schema_version"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "purpose_id": {"type":"string","minLength":1,"maxLength":256},
+    "purpose_version": {"type":"integer","minimum":1},
+    "name": {"type":"string","minLength":1,"maxLength":512},
+    "description": {"type":"string","minLength":1,"maxLength":2048},
+    "owner_id": {"type":"string","minLength":1,"maxLength":256},
+    "registered_at": {"type":"string","format":"date-time"},
+    "schema_version": {"const":"datagovops.business-purpose.v1"}
+  }
+}

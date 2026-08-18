@@ -32,7 +32,7 @@ from .dossier import (
     GovernanceDossier,
     dossier_document,
 )
-from .dossier_release import GovernanceDossierBuilder
+from .dossier_release_strict import GovernanceDossierBuilder
 from .dossier_verify import verify_dossier_document
 from .lineage import (
     LineageCompletenessReport,

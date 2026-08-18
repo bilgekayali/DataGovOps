@@ -22,6 +22,18 @@ from .access_retention import (
     RetentionSchedule,
 )
 from .access_retention_strict import AccessRetentionPrivacyRegistry
+from .dossier import (
+    DOSSIER_SCHEMA_VERSION,
+    RELEASE_VERSION,
+    DossierException,
+    DossierState,
+    DomainSnapshot,
+    GovernanceArtifact,
+    GovernanceDossier,
+    dossier_document,
+    verify_dossier_document,
+)
+from .dossier_release import GovernanceDossierBuilder
 from .lineage import (
     LineageCompletenessReport,
     LineageCompletenessRequirement,
@@ -91,6 +103,7 @@ __all__ = [
     "ClassificationScope",
     "ComparisonOperator",
     "CriticalDataElementDesignation",
+    "DOSSIER_SCHEMA_VERSION",
     "DataAssetRecord",
     "DataAssetRegistry",
     "DataAssetValidationReport",
@@ -102,11 +115,17 @@ __all__ = [
     "DataLocationKind",
     "DeletionEligibilityEvaluation",
     "DeletionEligibilityState",
+    "DomainSnapshot",
+    "DossierException",
+    "DossierState",
     "EvidenceTreatment",
     "FindingResolutionState",
     "FindingSeverity",
+    "GovernanceArtifact",
     "GovernanceControlPolicy",
     "GovernanceControlReport",
+    "GovernanceDossier",
+    "GovernanceDossierBuilder",
     "GovernanceError",
     "GovernanceGap",
     "GovernanceGapCode",
@@ -138,6 +157,7 @@ __all__ = [
     "QualityRuleEvaluation",
     "QualityTargetKind",
     "QualityTargetRef",
+    "RELEASE_VERSION",
     "RetentionSchedule",
     "RetestOutcome",
     "SemanticGovernanceRegistry",
@@ -145,6 +165,8 @@ __all__ = [
     "assert_validation_report_current",
     "canonical_json",
     "digest_artifact",
+    "dossier_document",
+    "verify_dossier_document",
 ]
 
-__version__ = "0.1.0.dev5"
+__version__ = "0.1.0"

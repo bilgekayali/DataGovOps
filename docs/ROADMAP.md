@@ -30,10 +30,14 @@
 - [x] strict schemas and Python 3.11/3.12/3.13 CI boundary.
 
 ### v0.1.4 — Data quality and remediation evidence (#6)
-- [ ] quality rules, dimensions and thresholds;
-- [ ] observations and deterministic breach/incomplete evaluation;
-- [ ] findings, remediation and retest/closure evidence;
-- [ ] freshness and conflicting-latest evidence controls.
+- [x] exact asset/CDE quality targets and versioned rule identities;
+- [x] quality dimensions, integer metric/unit contracts, comparison operators and thresholds;
+- [x] institution-owned missing/stale observation policy and freshness windows;
+- [x] immutable observations and deterministic pass/breach/incomplete evaluation;
+- [x] fail-closed conflicting-latest evidence controls;
+- [x] findings with severity anti-downgrade controls;
+- [x] remediation, independent HIGH/CRITICAL retest and deterministic closure evidence;
+- [x] evidence-history preservation, strict schemas and dev4 CI boundary.
 
 ### v0.1.5 — Access, retention and privacy/security obligations (#7)
 - [ ] access-purpose bindings and accountable approval evidence;

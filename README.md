@@ -1,48 +1,48 @@
 # DataGovOps
 
-**Evidence-backed data governance, lineage, classification, and accountability for regulated financial institutions.**
+**Evidence-backed data governance, lineage, classification, quality, and accountability for regulated financial institutions.**
 
 ## Summary
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, purpose, quality, access, retention, privacy/security obligations, and verifiable evidence.
 
-Current development milestone: **v0.1.3 — data lineage, transformation and provenance evidence** (`0.1.0.dev3`).
+Current development milestone: **v0.1.4 — data quality rules, observations, findings and remediation evidence** (`0.1.0.dev4`).
 
 The project is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, or substitute for accountable data owners, stewards, security/privacy teams, engineers, and legal review.
 
 ## Current executable boundary
 
-The v0.1.1 authoritative registry and v0.1.2 semantic layer remain intact. v0.1.3 adds deterministic lineage/provenance governance:
+The authoritative, semantic and lineage layers remain intact. v0.1.4 adds deterministic data-quality governance:
 
-- institution-scoped accountable principals, authoritative systems and immutable data-asset versions;
-- exact data-element identities and semantic classification/CDE/business-purpose evidence;
-- `LineageEndpointRef` for exact asset- or data-element-version targets with digest binding;
-- versioned `TransformationRecord` with accountable owner, execution system, code digest, config digest and source-evidence digest;
-- `LineageEdge` with exact source/target endpoints, transformation version/digest, producer system, consumer system and evidence digest;
-- asset-to-asset, data-element-to-data-element and mixed-granularity lineage;
-- directed-cycle rejection at registration time;
-- fail-closed dangling, cross-institution, digest-mismatch and stale endpoint/transformation state;
-- explicit `LineageCompletenessRequirement` artifacts rather than inferred completeness criteria;
-- deterministic `LineageCompletenessReport` with missing/stale requirement sets;
-- lineage snapshots bound to both the authoritative asset-registry snapshot and semantic-governance snapshot;
+- exact quality targets bound to a governed asset version or explicit Critical Data Element designation;
+- versioned `QualityRule` artifacts with accountable owner, dimension, metric/unit, comparison operator, threshold, freshness window and finding severity;
+- versioned institution-owned `QualityEvaluationPolicy` controlling missing/stale observation treatment without allowing missing/stale evidence to become PASS;
+- immutable `QualityObservation` evidence bound to exact rule/target digests and source-system identity;
+- deterministic `passed / breached / incomplete` evaluation with explicit reason codes;
+- fail-closed conflicting-latest observation handling;
+- findings whose severity cannot silently downgrade the configured rule severity;
+- remediation evidence and retest evidence bound to exact finding/evaluation history;
+- independent reviewer requirement for HIGH/CRITICAL retest closure;
+- deterministic finding resolution with retained remediation/retest evidence history;
+- current-state failure when a newer asset/CDE or quality-rule/policy version supersedes the represented state;
+- quality snapshots bound to exact authoritative and semantic governance snapshots;
 - strict Draft 2020-12 JSON Schemas and Python 3.11/3.12/3.13 CI;
 - offline-capability guard, wheel build and clean-wheel smoke.
 
 ```text
-DataAssetRegistry ───────┐
-                        ├─> LineageRegistry
-SemanticGovernance ─────┘       |
-                                ├─ TransformationRecord
-                                ├─ LineageEdge
-                                ├─ CompletenessRequirement
-                                └─ CompletenessReport
+DataAssetRegistry ───────────┐
+                            ├─> QualityRegistry
+SemanticGovernanceRegistry ─┘      |
+                                   ├─ Rule + EvaluationPolicy
+                                   ├─ Observation -> Evaluation
+                                   └─ Finding -> Remediation -> Retest -> Resolution
 ```
 
-Lineage completeness is evaluated only against explicit institution-owned requirements. An empty requirement set is **not** treated as proof that lineage is complete.
+A `passed` quality evaluation means only that the selected fresh governed observation satisfied the exact configured rule/threshold at the represented time. It does **not** prove that the data is objectively accurate, complete, fit for regulatory reporting, or BCBS 239 compliant.
 
 ## v0.1 foundation sequence
 
-`#3 inventory/accountability ✓ → #4 classification/CDE/purpose ✓ → #5 lineage/provenance → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
+`#3 inventory/accountability ✓ → #4 classification/CDE/purpose ✓ → #5 lineage/provenance ✓ → #6 quality/remediation → #7 access/retention/privacy → #8 dossier/release gate`
 
 The package remains a development build until #8. Completion of #3 through #8 is the proposed **DataGovOps v0.1.0 foundation release**.
 
@@ -57,7 +57,7 @@ Design mappings are intended to support evidence/control alignment with:
 - DAMA-aligned governance concepts;
 - relevant BDDK, SPK and institution-owned data-governance requirements.
 
-These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer data ownership, establish regulatory applicability, or prove that data is accurate simply because metadata is present.
+These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer data ownership, establish regulatory applicability, or prove that data is accurate simply because metadata or quality evidence is present.
 
 ## Explicit non-claims
 
@@ -69,7 +69,7 @@ DataGovOps does **not** by itself establish:
 - correctness of source-of-truth or authoritative-system declarations;
 - semantic correctness or completeness of lineage beyond configured explicit requirements;
 - correctness of transformation code or configuration merely because digests are bound;
-- data quality, completeness, accuracy or fitness for regulatory reporting;
+- objective data accuracy, completeness, consistency, timeliness, uniqueness or fitness for regulatory reporting;
 - deletion completion or legal-hold satisfaction;
 - access authorization sufficiency;
 - regulator acceptance or legal applicability.

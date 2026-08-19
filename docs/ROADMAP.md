@@ -37,7 +37,7 @@
 - [x] fail-closed conflicting-latest evidence controls;
 - [x] findings with severity anti-downgrade controls;
 - [x] remediation, independent HIGH/CRITICAL retest and deterministic closure evidence;
-- [x] evidence-history preservation, strict schemas and dev4 CI boundary.
+- [x] evidence-history preservation and strict schemas.
 
 ### v0.1.5 — Access, retention and privacy/security obligations (#7)
 - [x] versioned access roles bound to governed principals and permissions;
@@ -46,7 +46,7 @@
 - [x] legal-hold and separate release evidence that blocks eligibility while active;
 - [x] privacy/security/residency/cross-border mappings and exact location evidence;
 - [x] institution-owned missing/stale control policy and deterministic gap reports;
-- [x] strict schemas and dev5 CI boundary.
+- [x] strict schemas and release CI boundary.
 
 ### v0.1.6 — Governance dossier, CLI and release gate (#8)
 - [x] deterministic dossier over the complete governed state;
@@ -57,11 +57,28 @@
 - [x] Python 3.11/3.12/3.13 CI, wheel and clean-wheel CLI smoke;
 - [x] `0.1.0` package/code boundary and explicit publication non-claim.
 
-Completion of #3 through #8 constitutes the proposed **DataGovOps v0.1.0 foundation code/package release boundary**. A Git tag or GitHub Release is a separate publication action and must be verified independently.
+Completion of #3 through #8 constitutes the **DataGovOps v0.1.0 foundation code/package boundary**. A Git tag or GitHub Release is a separate publication action and must be verified independently.
+
+## v0.2 reporting-governance and assurance train
+
+### v0.2.0 — Regulatory reporting lineage, reconciliation and assurance evidence (#15)
+- [x] versioned governed-report identity, accountable owner, report family, purpose and frequency;
+- [x] institution-owned timeliness, completeness and reconciliation thresholds;
+- [x] report metrics bound to exact governed source asset versions and explicit transformation/quality-rule evidence;
+- [x] strict latest-version currentness for source assets, transformations and quality rules;
+- [x] production observations bound to exact inventory/semantic/lineage/quality reporting-basis snapshots;
+- [x] deterministic `met` / `breached` / `incomplete` reporting-control assessments using integer units/basis points;
+- [x] fail-closed missing and conflicting-latest reporting evidence;
+- [x] accountable report-owner attestation with approved/rejected/escalated decisions;
+- [x] reporting findings, remediation and independent HIGH/CRITICAL retest evidence;
+- [x] reporting-domain dossier snapshot and aggregate gap/revalidation propagation;
+- [x] offline semantic verification that recomputes assessment controls and rejects rehashed forged `met` evidence;
+- [x] strict Draft 2020-12 reporting schemas and Python 3.11/3.12/3.13 release gates;
+- [x] `0.2.0` package/code boundary with explicit BCBS 239/regulatory-reporting non-claims.
 
 ## Later hardening toward v1
 
-- BCBS 239 risk-data aggregation assurance mappings and evidence;
+- deeper BCBS 239 assurance mappings, report taxonomy and multi-report aggregation evidence;
 - PostgreSQL tenant isolation/RLS and institution-owned cryptographic boundaries;
 - institution-owned signing keys, external immutable anchors and trusted timestamping;
 - immutable audit/recovery evidence;

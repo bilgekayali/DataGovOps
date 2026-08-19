@@ -5,12 +5,8 @@ from typing import Any
 from .dossier import DossierState, DomainSnapshot, GovernanceDossier, _artifact, _parse_time
 from .dossier_release_strict import GovernanceDossierBuilder as _V01Builder
 from .models import GovernanceError, digest_artifact
-from .reporting import (
-    AttestationDecision,
-    ReportingAssessmentState,
-    ReportingFindingStatus,
-    ReportingGovernanceRegistry,
-)
+from .reporting import AttestationDecision, ReportingAssessmentState, ReportingFindingStatus
+from .reporting_strict import ReportingGovernanceRegistry
 
 
 REPORTING_TYPES = {
@@ -46,6 +42,8 @@ class GovernanceDossierBuilder(_V01Builder):
     def __init__(self, *args: Any, reporting_registry: ReportingGovernanceRegistry | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         if reporting_registry is not None:
+            if not isinstance(reporting_registry, ReportingGovernanceRegistry):
+                raise GovernanceError("dossier requires strict public ReportingGovernanceRegistry")
             if reporting_registry.asset_registry is not self.asset_registry:
                 raise GovernanceError("reporting registry must use dossier asset registry")
             if reporting_registry.semantic_registry is not self.semantic_registry:

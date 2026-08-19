@@ -151,8 +151,11 @@ class ReportingGovernanceRegistry(_ReportingGovernanceRegistry):
             if not isinstance(retest, ReportingRetestEvidence):
                 raise GovernanceError("reporting finding resolution requires reassessment-bound retest evidence")
             reassessment = self._assessment(retest.reassessment_digest)
-            self.assert_assessment_current(reassessment)
-            latest_time = max(latest_time, _parse_time(retest.tested_at))
+            latest_time = max(
+                latest_time,
+                _parse_time(reassessment.assessed_at),
+                _parse_time(retest.tested_at),
+            )
         if _parse_time(resolution.resolved_at) < latest_time:
             raise GovernanceError("reporting finding resolution cannot predate lifecycle evidence")
         return resolution

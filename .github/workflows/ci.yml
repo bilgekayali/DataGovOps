@@ -54,6 +54,7 @@ jobs:
               Path("src/datagovops/access_retention.py"),
               Path("src/datagovops/access_retention_strict.py"),
               Path("src/datagovops/reporting.py"),
+              Path("src/datagovops/reporting_strict.py"),
               Path("src/datagovops/dossier.py"),
               Path("src/datagovops/dossier_release.py"),
               Path("src/datagovops/dossier_release_strict.py"),

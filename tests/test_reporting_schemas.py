@@ -151,6 +151,7 @@ class ReportingSchemaTests(unittest.TestCase):
             retest_id="retest-1",
             finding_digest=finding.artifact_digest,
             remediation_digest=remediation.artifact_digest,
+            reassessment_digest=assessment.artifact_digest,
             reviewer_id="reviewer",
             outcome=ReportingRetestOutcome.PASSED,
             tested_at="2026-08-19T08:06:00Z",
@@ -176,6 +177,7 @@ class ReportingSchemaTests(unittest.TestCase):
         )
         for name in ("report", "metric", "observation", "assessment", "attestation", "finding", "remediation", "retest"):
             self.assertFalse(schema["$defs"][name]["additionalProperties"])
+        self.assertIn("reassessment_digest", schema["$defs"]["retest"]["required"])
         self.assertFalse(
             schema["$defs"]["assessment"]["properties"]["regulatory_compliance_determined"].get("default", False)
         )

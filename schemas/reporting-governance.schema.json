@@ -118,10 +118,11 @@
     },
     "retest": {
       "type":"object","additionalProperties":false,
-      "required":["institution_id","retest_id","finding_digest","remediation_digest","reviewer_id","outcome","tested_at","evidence_digest","schema_version"],
+      "required":["institution_id","retest_id","finding_digest","remediation_digest","reassessment_digest","reviewer_id","outcome","tested_at","evidence_digest","schema_version"],
       "properties":{
         "institution_id":{"type":"string","minLength":1},"retest_id":{"type":"string","minLength":1},"finding_digest":{"$ref":"#/$defs/digest"},
-        "remediation_digest":{"$ref":"#/$defs/digest"},"reviewer_id":{"type":"string","minLength":1},"outcome":{"enum":["passed","failed"]},
+        "remediation_digest":{"$ref":"#/$defs/digest"},"reassessment_digest":{"$ref":"#/$defs/digest"},
+        "reviewer_id":{"type":"string","minLength":1},"outcome":{"enum":["passed","failed"]},
         "tested_at":{"$ref":"#/$defs/timestamp"},"evidence_digest":{"$ref":"#/$defs/digest"},"schema_version":{"const":"datagovops.reporting-retest-evidence.v1"}
       }
     }

@@ -584,10 +584,6 @@ def verify_dossier_document(document: dict) -> str:
             expected_findings.add("reporting:no_reports_configured")
 
         metric_errors_by_digest: dict[str, str] = {}
-        current_assessment_errors: dict[str, str | None] = {}
-        current_assessments: set[str] = set()
-        current_basis_by_report: dict[str, str] = {}
-
         for report_id, report in sorted(latest_reports.items()):
             current_metrics = _latest_metric_items(metrics, report["digest"])
             if not current_metrics:
@@ -619,14 +615,12 @@ def verify_dossier_document(document: dict) -> str:
                 if current is None or _time(assessment["payload"]["assessed_at"]) > _time(current["payload"]["assessed_at"]):
                     latest_by_period[period_id] = assessment
             basis = _basis(institution_id, report["digest"], metrics, parent_snapshots)
-            current_basis_by_report[report["digest"]] = basis
             errors_for_report = {
                 item["digest"]: metric_errors_by_digest[item["digest"]]
                 for item in current_metrics
                 if item["digest"] in metric_errors_by_digest
             }
             for period_id, assessment in sorted(latest_by_period.items()):
-                current_assessments.add(assessment["digest"])
                 error = _current_assessment_error(
                     assessment,
                     report=report,
@@ -635,7 +629,6 @@ def verify_dossier_document(document: dict) -> str:
                     current_basis=basis,
                     metric_errors=errors_for_report,
                 )
-                current_assessment_errors[assessment["digest"]] = error
                 if error is not None:
                     code = f"reporting:assessment:{report_id}:{period_id}:{error}"
                     expected_findings.add(code)
@@ -710,39 +703,10 @@ def verify_dossier_document(document: dict) -> str:
                         reassessment = reporting_by_digest.get(retest["payload"].get("reassessment_digest"))
                         if reassessment is None:
                             error = "reporting finding resolution requires reassessment-bound retest evidence"
+                        elif _time(retest["payload"]["tested_at"]) > generated_time:
+                            error = "reporting finding resolution cannot predate lifecycle evidence"
                         else:
-                            current_error = current_assessment_errors.get(reassessment["digest"])
-                            if reassessment["digest"] not in current_assessments:
-                                report = reporting_by_digest.get(reassessment["payload"].get("report_digest"))
-                                if report is None:
-                                    current_error = "report assurance assessment is stale"
-                                else:
-                                    current_metrics = _latest_metric_items(metrics, report["digest"])
-                                    basis = current_basis_by_report.get(report["digest"]) or _basis(
-                                        institution_id,
-                                        report["digest"],
-                                        metrics,
-                                        parent_snapshots,
-                                    )
-                                    errors_for_report = {
-                                        item["digest"]: metric_errors_by_digest[item["digest"]]
-                                        for item in current_metrics
-                                        if item["digest"] in metric_errors_by_digest
-                                    }
-                                    current_error = _current_assessment_error(
-                                        reassessment,
-                                        report=report,
-                                        current_metrics=current_metrics,
-                                        observations=observations,
-                                        current_basis=basis,
-                                        metric_errors=errors_for_report,
-                                    )
-                            if current_error is not None:
-                                error = current_error
-                            elif _time(retest["payload"]["tested_at"]) > generated_time:
-                                error = "reporting finding resolution cannot predate lifecycle evidence"
-                            else:
-                                status = "closed" if retest["payload"].get("outcome") == "passed" else "retest_failed"
+                            status = "closed" if retest["payload"].get("outcome") == "passed" else "retest_failed"
             if error is None and remediation is not None and _time(remediation["payload"]["completed_at"]) > generated_time:
                 error = "reporting finding resolution cannot predate lifecycle evidence"
             if error is None and _time(finding["payload"]["identified_at"]) > generated_time:

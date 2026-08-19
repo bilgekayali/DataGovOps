@@ -342,6 +342,38 @@ class ReportingTests(unittest.TestCase):
             evidence_digest=D2,
         )
         reporting.register_remediation(remediation)
+        with self.assertRaisesRegex(GovernanceError, "cannot predate remediation"):
+            reporting.register_retest(
+                ReportingRetestEvidence(
+                    institution_id="bank-a",
+                    retest_id="retest-pre-remediation-assessment",
+                    finding_digest=finding.artifact_digest,
+                    remediation_digest=remediation.artifact_digest,
+                    reassessment_digest=breached.artifact_digest,
+                    reviewer_id="reviewer",
+                    outcome=ReportingRetestOutcome.PASSED,
+                    tested_at="2026-08-19T08:08:00Z",
+                    evidence_digest=D3,
+                )
+            )
+
+        self._observation(
+            reporting,
+            report,
+            observation_id="obs-remediated",
+            period_id="2026-07",
+            produced_at="2026-08-19T08:00:30Z",
+            actual=100,
+            reconciliation=10,
+            recorded_at="2026-08-19T08:08:00Z",
+        )
+        reassessment = reporting.evaluate_report(
+            report,
+            "2026-07",
+            assessed_at="2026-08-19T08:08:30Z",
+        )
+        self.assertEqual(reassessment.state, ReportingAssessmentState.MET)
+
         with self.assertRaisesRegex(GovernanceError, "independent retest"):
             reporting.register_retest(
                 ReportingRetestEvidence(
@@ -349,9 +381,10 @@ class ReportingTests(unittest.TestCase):
                     retest_id="retest-wrong",
                     finding_digest=finding.artifact_digest,
                     remediation_digest=remediation.artifact_digest,
+                    reassessment_digest=reassessment.artifact_digest,
                     reviewer_id="remediator",
                     outcome=ReportingRetestOutcome.PASSED,
-                    tested_at="2026-08-19T08:08:00Z",
+                    tested_at="2026-08-19T08:09:00Z",
                     evidence_digest=D3,
                 )
             )
@@ -360,16 +393,17 @@ class ReportingTests(unittest.TestCase):
             retest_id="retest-1",
             finding_digest=finding.artifact_digest,
             remediation_digest=remediation.artifact_digest,
+            reassessment_digest=reassessment.artifact_digest,
             reviewer_id="reviewer",
             outcome=ReportingRetestOutcome.PASSED,
-            tested_at="2026-08-19T08:08:00Z",
+            tested_at="2026-08-19T08:09:00Z",
             evidence_digest=D4,
         )
         reporting.register_retest(retest)
         self.assertEqual(
             reporting.resolve_finding(
                 finding,
-                resolved_at="2026-08-19T08:09:00Z",
+                resolved_at="2026-08-19T08:10:00Z",
             ).status.value,
             "closed",
         )

@@ -100,10 +100,9 @@ from .reporting import (
     ReportingMetric,
     ReportingMetricState,
     ReportingRemediationEvidence,
-    ReportingRetestEvidence,
     ReportingRetestOutcome,
 )
-from .reporting_strict import ReportingGovernanceRegistry
+from .reporting_strict import ReportingGovernanceRegistry, ReportingRetestEvidence
 from .semantic import (
     AssetPurposeBinding,
     BusinessPurpose,

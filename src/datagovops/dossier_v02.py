@@ -41,7 +41,7 @@ def reporting_snapshot_digest(institution_id: str, artifacts, snapshots) -> str:
 
 
 class GovernanceDossierBuilder(_V01Builder):
-    """v0.2 builder that optionally packages reporting-governance state."""
+    """v0.2 builder that appends reporting evidence after the v0.1 strict gate."""
 
     def __init__(self, *args: Any, reporting_registry: ReportingGovernanceRegistry | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -56,10 +56,10 @@ class GovernanceDossierBuilder(_V01Builder):
                 raise GovernanceError("reporting registry must use dossier quality registry")
         self.reporting_registry = reporting_registry
 
-    def _collect_registry_artifacts(self, institution_id: str):
-        artifacts = super()._collect_registry_artifacts(institution_id)
+    def _reporting_artifacts(self, institution_id: str):
         if self.reporting_registry is None:
-            return artifacts
+            return ()
+        artifacts = []
         for mapping in (
             self.reporting_registry._reports,
             self.reporting_registry._metrics,
@@ -75,7 +75,12 @@ class GovernanceDossierBuilder(_V01Builder):
                 for value in mapping.values()
                 if getattr(value, "institution_id", None) == institution_id
             )
-        return artifacts
+        return tuple(
+            sorted(
+                artifacts,
+                key=lambda item: (item.domain, item.artifact_type, item.artifact_id),
+            )
+        )
 
     def _reporting_findings(self, institution_id: str, generated_at: str) -> tuple[set[str], set[str]]:
         if self.reporting_registry is None:
@@ -174,7 +179,8 @@ class GovernanceDossierBuilder(_V01Builder):
         dossier = super().build(institution_id, **kwargs)
         if self.reporting_registry is None:
             return dossier
-        reporting_artifacts = tuple(item for item in dossier.artifacts if item.domain == "reporting")
+
+        reporting_artifacts = self._reporting_artifacts(institution_id)
         reporting_digest = reporting_snapshot_digest(
             institution_id,
             reporting_artifacts,
@@ -195,6 +201,15 @@ class GovernanceDossierBuilder(_V01Builder):
                 key=lambda item: item.domain,
             )
         )
+        artifacts = tuple(
+            sorted(
+                dossier.artifacts + reporting_artifacts,
+                key=lambda item: (item.domain, item.artifact_type, item.artifact_id),
+            )
+        )
+        coverage = dict(dossier.coverage)
+        if reporting_artifacts:
+            coverage["reporting"] = len(reporting_artifacts)
 
         reporting_gaps, reporting_revalidation = self._reporting_findings(
             institution_id,
@@ -227,8 +242,8 @@ class GovernanceDossierBuilder(_V01Builder):
             findings=tuple(sorted(findings)),
             revalidation_findings=tuple(sorted(revalidation)),
             active_exception_digests=dossier.active_exception_digests,
-            coverage=dossier.coverage,
+            coverage=coverage,
             domain_snapshots=snapshots,
-            artifacts=dossier.artifacts,
+            artifacts=artifacts,
             exceptions=dossier.exceptions,
         )

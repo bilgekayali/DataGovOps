@@ -97,13 +97,13 @@ from .reporting import (
     ReportingFindingResolution,
     ReportingFindingSeverity,
     ReportingFindingStatus,
-    ReportingGovernanceRegistry,
     ReportingMetric,
     ReportingMetricState,
     ReportingRemediationEvidence,
     ReportingRetestEvidence,
     ReportingRetestOutcome,
 )
+from .reporting_strict import ReportingGovernanceRegistry
 from .semantic import (
     AssetPurposeBinding,
     BusinessPurpose,

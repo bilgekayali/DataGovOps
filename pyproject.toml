@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datagovops"
-version = "0.1.0"
-description = "Evidence-backed data governance, classification, and accountability for regulated financial institutions"
+version = "0.2.0"
+description = "Evidence-backed data governance, classification, accountability, and reporting assurance for regulated financial institutions"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Bilge Kayalı" }]
@@ -13,7 +13,7 @@ license = { text = "Apache-2.0" }
 dependencies = [
   "jsonschema>=4.23,<5",
 ]
-keywords = ["data-governance", "bcbs239", "gdpr", "data-quality", "banking"]
+keywords = ["data-governance", "bcbs239", "gdpr", "data-quality", "banking", "regulatory-reporting"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: Apache Software License",

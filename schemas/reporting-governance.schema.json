@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps v0.2 Reporting Governance Artifacts",
+  "oneOf": [
+    {"$ref":"#/$defs/report"},
+    {"$ref":"#/$defs/metric"},
+    {"$ref":"#/$defs/observation"},
+    {"$ref":"#/$defs/assessment"},
+    {"$ref":"#/$defs/attestation"},
+    {"$ref":"#/$defs/finding"},
+    {"$ref":"#/$defs/remediation"},
+    {"$ref":"#/$defs/retest"}
+  ],
+  "$defs": {
+    "digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "timestamp": {"type":"string","format":"date-time","pattern":"Z$"},
+    "source_ref": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","asset_id","asset_version","asset_digest","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},
+        "asset_id":{"type":"string","minLength":1},
+        "asset_version":{"type":"integer","minimum":1},
+        "asset_digest":{"$ref":"#/$defs/digest"},
+        "schema_version":{"const":"datagovops.report-source-ref.v1"}
+      }
+    },
+    "report": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","report_id","report_version","name","owner_id","family","reporting_purpose","frequency","maximum_lateness_seconds","minimum_completeness_basis_points","maximum_reconciliation_variance_basis_points","registered_at","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"report_id":{"type":"string","minLength":1},"report_version":{"type":"integer","minimum":1},
+        "name":{"type":"string","minLength":1},"owner_id":{"type":"string","minLength":1},
+        "family":{"enum":["regulatory","management","financial","risk","other"]},
+        "reporting_purpose":{"type":"string","minLength":1},"frequency":{"type":"string","minLength":1},
+        "maximum_lateness_seconds":{"type":"integer","minimum":0},
+        "minimum_completeness_basis_points":{"type":"integer","minimum":1,"maximum":10000},
+        "maximum_reconciliation_variance_basis_points":{"type":"integer","minimum":0,"maximum":10000},
+        "registered_at":{"$ref":"#/$defs/timestamp"},"schema_version":{"const":"datagovops.governed-report.v1"}
+      }
+    },
+    "metric": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","metric_id","metric_version","report_digest","name","owner_id","source_refs","transformation_digests","quality_rule_digests","calculation_description","registered_at","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"metric_id":{"type":"string","minLength":1},"metric_version":{"type":"integer","minimum":1},
+        "report_digest":{"$ref":"#/$defs/digest"},"name":{"type":"string","minLength":1},"owner_id":{"type":"string","minLength":1},
+        "source_refs":{"type":"array","minItems":1,"uniqueItems":true,"items":{"$ref":"#/$defs/source_ref"}},
+        "transformation_digests":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/digest"}},
+        "quality_rule_digests":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/digest"}},
+        "calculation_description":{"type":"string","minLength":1},"registered_at":{"$ref":"#/$defs/timestamp"},
+        "schema_version":{"const":"datagovops.report-metric-definition.v1"}
+      }
+    },
+    "observation": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","observation_id","report_digest","period_id","reporting_basis_digest","due_at","produced_at","expected_record_count","actual_record_count","reconciliation_variance_basis_points","source_system_id","evidence_digest","recorded_at","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"observation_id":{"type":"string","minLength":1},"report_digest":{"$ref":"#/$defs/digest"},
+        "period_id":{"type":"string","minLength":1},"reporting_basis_digest":{"$ref":"#/$defs/digest"},
+        "due_at":{"$ref":"#/$defs/timestamp"},"produced_at":{"$ref":"#/$defs/timestamp"},"recorded_at":{"$ref":"#/$defs/timestamp"},
+        "expected_record_count":{"type":"integer","minimum":1},"actual_record_count":{"type":"integer","minimum":0},
+        "reconciliation_variance_basis_points":{"type":"integer","minimum":0,"maximum":10000},
+        "source_system_id":{"type":"string","minLength":1},"evidence_digest":{"$ref":"#/$defs/digest"},
+        "schema_version":{"const":"datagovops.report-production-observation.v1"}
+      }
+    },
+    "control": {
+      "type":"object","additionalProperties":false,
+      "required":["metric","state","observed_value","threshold_value","reason_code"],
+      "properties":{
+        "metric":{"enum":["timeliness","completeness","reconciliation"]},
+        "state":{"enum":["met","breached","incomplete"]},
+        "observed_value":{"type":["integer","null"],"minimum":0},"threshold_value":{"type":"integer","minimum":0},
+        "reason_code":{"type":"string","minLength":1}
+      }
+    },
+    "assessment": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","report_digest","period_id","reporting_basis_digest","observation_digest","metric_definition_digests","control_assessments","state","gaps","assessed_at","regulatory_compliance_determined","reporting_correctness_determined","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"report_digest":{"$ref":"#/$defs/digest"},"period_id":{"type":"string","minLength":1},
+        "reporting_basis_digest":{"$ref":"#/$defs/digest"},"observation_digest":{"oneOf":[{"$ref":"#/$defs/digest"},{"type":"null"}]},
+        "metric_definition_digests":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/digest"}},
+        "control_assessments":{"type":"array","minItems":3,"maxItems":3,"items":{"$ref":"#/$defs/control"}},
+        "state":{"enum":["met","breached","incomplete"]},"gaps":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},
+        "assessed_at":{"$ref":"#/$defs/timestamp"},"regulatory_compliance_determined":{"const":false},"reporting_correctness_determined":{"const":false},
+        "schema_version":{"const":"datagovops.report-assurance-assessment.v1"}
+      }
+    },
+    "attestation": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","attestation_id","assessment_digest","owner_id","decision","rationale","attested_at","evidence_digest","regulatory_approval_determined","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"attestation_id":{"type":"string","minLength":1},"assessment_digest":{"$ref":"#/$defs/digest"},
+        "owner_id":{"type":"string","minLength":1},"decision":{"enum":["approved","rejected","escalated"]},"rationale":{"type":"string","minLength":1},
+        "attested_at":{"$ref":"#/$defs/timestamp"},"evidence_digest":{"$ref":"#/$defs/digest"},"regulatory_approval_determined":{"const":false},
+        "schema_version":{"const":"datagovops.report-owner-attestation.v1"}
+      }
+    },
+    "finding": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","finding_id","assessment_digest","severity","owner_id","title","identified_at","evidence_digest","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"finding_id":{"type":"string","minLength":1},"assessment_digest":{"$ref":"#/$defs/digest"},
+        "severity":{"enum":["low","medium","high","critical"]},"owner_id":{"type":"string","minLength":1},"title":{"type":"string","minLength":1},
+        "identified_at":{"$ref":"#/$defs/timestamp"},"evidence_digest":{"$ref":"#/$defs/digest"},"schema_version":{"const":"datagovops.reporting-finding.v1"}
+      }
+    },
+    "remediation": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","remediation_id","finding_digest","owner_id","summary","completed_at","evidence_digest","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"remediation_id":{"type":"string","minLength":1},"finding_digest":{"$ref":"#/$defs/digest"},
+        "owner_id":{"type":"string","minLength":1},"summary":{"type":"string","minLength":1},"completed_at":{"$ref":"#/$defs/timestamp"},
+        "evidence_digest":{"$ref":"#/$defs/digest"},"schema_version":{"const":"datagovops.reporting-remediation-evidence.v1"}
+      }
+    },
+    "retest": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","retest_id","finding_digest","remediation_digest","reassessment_digest","reviewer_id","outcome","tested_at","evidence_digest","schema_version"],
+      "properties":{
+        "institution_id":{"type":"string","minLength":1},"retest_id":{"type":"string","minLength":1},"finding_digest":{"$ref":"#/$defs/digest"},
+        "remediation_digest":{"$ref":"#/$defs/digest"},"reassessment_digest":{"$ref":"#/$defs/digest"},
+        "reviewer_id":{"type":"string","minLength":1},"outcome":{"enum":["passed","failed"]},
+        "tested_at":{"$ref":"#/$defs/timestamp"},"evidence_digest":{"$ref":"#/$defs/digest"},"schema_version":{"const":"datagovops.reporting-retest-evidence.v1"}
+      }
+    }
+  }
+}

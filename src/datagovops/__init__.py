@@ -1,5 +1,9 @@
 """DataGovOps governed-data core."""
 
+from ._release_v02 import PACKAGE_VERSION, apply_release_version as _apply_release_version
+
+_apply_release_version()
+
 from .access_retention import (
     AccessApprovalDecision,
     AccessGrant,
@@ -32,8 +36,8 @@ from .dossier import (
     GovernanceDossier,
     dossier_document,
 )
-from .dossier_release_strict import GovernanceDossierBuilder
-from .dossier_verify import verify_dossier_document
+from .dossier_v02 import GovernanceDossierBuilder
+from .dossier_verify_v02 import verify_dossier_document
 from .lineage import (
     LineageCompletenessReport,
     LineageCompletenessRequirement,
@@ -78,6 +82,27 @@ from .quality import (
     RetestOutcome,
 )
 from .registry import DataAssetRegistry
+from .reporting import (
+    AttestationDecision,
+    GovernedReport,
+    ReportAssuranceAssessment,
+    ReportFamily,
+    ReportMetricDefinition,
+    ReportOwnerAttestation,
+    ReportProductionObservation,
+    ReportSourceRef,
+    ReportingAssessmentState,
+    ReportingControlAssessment,
+    ReportingFinding,
+    ReportingFindingResolution,
+    ReportingFindingSeverity,
+    ReportingFindingStatus,
+    ReportingMetric,
+    ReportingMetricState,
+    ReportingRemediationEvidence,
+    ReportingRetestOutcome,
+)
+from .reporting_strict import ReportingGovernanceRegistry, ReportingRetestEvidence
 from .semantic import (
     AssetPurposeBinding,
     BusinessPurpose,
@@ -97,6 +122,7 @@ __all__ = [
     "AccessRole",
     "AccessSubjectKind",
     "AssetPurposeBinding",
+    "AttestationDecision",
     "AuthoritativeSystem",
     "BusinessPurpose",
     "ClassificationDecision",
@@ -131,6 +157,7 @@ __all__ = [
     "GovernanceGapCode",
     "GovernancePolicy",
     "GovernancePrincipal",
+    "GovernedReport",
     "LegalHold",
     "LegalHoldRelease",
     "LineageCompletenessReport",
@@ -158,6 +185,24 @@ __all__ = [
     "QualityTargetKind",
     "QualityTargetRef",
     "RELEASE_VERSION",
+    "ReportAssuranceAssessment",
+    "ReportFamily",
+    "ReportMetricDefinition",
+    "ReportOwnerAttestation",
+    "ReportProductionObservation",
+    "ReportSourceRef",
+    "ReportingAssessmentState",
+    "ReportingControlAssessment",
+    "ReportingFinding",
+    "ReportingFindingResolution",
+    "ReportingFindingSeverity",
+    "ReportingFindingStatus",
+    "ReportingGovernanceRegistry",
+    "ReportingMetric",
+    "ReportingMetricState",
+    "ReportingRemediationEvidence",
+    "ReportingRetestEvidence",
+    "ReportingRetestOutcome",
     "RetentionSchedule",
     "RetestOutcome",
     "SemanticGovernanceRegistry",
@@ -169,4 +214,6 @@ __all__ = [
     "verify_dossier_document",
 ]
 
-__version__ = "0.1.0"
+__version__ = PACKAGE_VERSION
+
+del _apply_release_version

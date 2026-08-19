@@ -62,33 +62,64 @@ def _basis(institution_id: str, report_digest: str, metrics: list[dict], snapsho
     })
 
 
-def _expected_controls(report: dict, observation: dict | None) -> tuple[list[dict], str, list[str]]:
+def _latest_metric_digests(metrics: list[dict], report_digest: str) -> list[str]:
+    latest: dict[str, dict] = {}
+    for item in metrics:
+        payload = item["payload"]
+        if payload.get("report_digest") != report_digest:
+            continue
+        metric_id = payload.get("metric_id")
+        current = latest.get(metric_id)
+        if current is None or payload.get("metric_version") > current["payload"].get("metric_version"):
+            latest[metric_id] = item
+    return sorted(item["digest"] for item in latest.values())
+
+
+def _incomplete_controls(report_payload: dict, reason_code: str) -> list[dict]:
+    return [
+        {
+            "metric": "completeness",
+            "state": "incomplete",
+            "observed_value": None,
+            "threshold_value": report_payload["minimum_completeness_basis_points"],
+            "reason_code": reason_code,
+        },
+        {
+            "metric": "reconciliation",
+            "state": "incomplete",
+            "observed_value": None,
+            "threshold_value": report_payload["maximum_reconciliation_variance_basis_points"],
+            "reason_code": reason_code,
+        },
+        {
+            "metric": "timeliness",
+            "state": "incomplete",
+            "observed_value": None,
+            "threshold_value": report_payload["maximum_lateness_seconds"],
+            "reason_code": reason_code,
+        },
+    ]
+
+
+def _expected_controls(
+    report: dict,
+    observation: dict | None,
+    *,
+    metric_definitions_present: bool,
+) -> tuple[list[dict], str, list[str]]:
     report_payload = report["payload"]
+    if not metric_definitions_present:
+        return (
+            _incomplete_controls(report_payload, "metric_definition_missing"),
+            "incomplete",
+            ["metric_definition_missing"],
+        )
     if observation is None:
-        controls = [
-            {
-                "metric": "completeness",
-                "state": "incomplete",
-                "observed_value": None,
-                "threshold_value": report_payload["minimum_completeness_basis_points"],
-                "reason_code": "production_observation_missing",
-            },
-            {
-                "metric": "reconciliation",
-                "state": "incomplete",
-                "observed_value": None,
-                "threshold_value": report_payload["maximum_reconciliation_variance_basis_points"],
-                "reason_code": "production_observation_missing",
-            },
-            {
-                "metric": "timeliness",
-                "state": "incomplete",
-                "observed_value": None,
-                "threshold_value": report_payload["maximum_lateness_seconds"],
-                "reason_code": "production_observation_missing",
-            },
-        ]
-        return controls, "incomplete", ["production_observation_missing"]
+        return (
+            _incomplete_controls(report_payload, "production_observation_missing"),
+            "incomplete",
+            ["production_observation_missing"],
+        )
 
     payload = observation["payload"]
     lateness = max(0, int((_time(payload["produced_at"]) - _time(payload["due_at"])).total_seconds()))
@@ -165,7 +196,6 @@ def verify_dossier_document(document: dict) -> str:
                 raise GovernanceError("reporting artifact schema or institution scope mismatch")
             if digest_artifact(payload) != artifact["digest"] or artifact["artifact_id"] != artifact["digest"]:
                 raise GovernanceError("reporting artifact digest mismatch")
-        reports = [item for item in reporting if item["artifact_type"] == "GovernedReport"]
         metrics = [item for item in reporting if item["artifact_type"] == "ReportMetricDefinition"]
         observations = [item for item in reporting if item["artifact_type"] == "ReportProductionObservation"]
         assessments = [item for item in reporting if item["artifact_type"] == "ReportAssuranceAssessment"]
@@ -204,11 +234,7 @@ def verify_dossier_document(document: dict) -> str:
             basis = _basis(institution_id, report["digest"], metrics, parent_snapshots)
             if payload.get("reporting_basis_digest") != basis:
                 raise GovernanceError("report assessment basis digest mismatch")
-            expected_metrics = sorted(
-                item["digest"]
-                for item in metrics
-                if item["payload"].get("report_digest") == report["digest"]
-            )
+            expected_metrics = _latest_metric_digests(metrics, report["digest"])
             if payload.get("metric_definition_digests") != expected_metrics:
                 raise GovernanceError("report assessment metric-definition manifest mismatch")
             if payload.get("regulatory_compliance_determined") is not False or payload.get("reporting_correctness_determined") is not False:
@@ -216,6 +242,8 @@ def verify_dossier_document(document: dict) -> str:
             observation_digest = payload.get("observation_digest")
             observation = None
             if observation_digest is not None:
+                if not expected_metrics:
+                    raise GovernanceError("report assessment without metric definitions cannot select observation evidence")
                 observation = reporting_by_digest.get(observation_digest)
                 if observation is None or observation["artifact_type"] != "ReportProductionObservation":
                     raise GovernanceError("report assessment observation reference mismatch")
@@ -223,7 +251,11 @@ def verify_dossier_document(document: dict) -> str:
                     raise GovernanceError("report assessment observation belongs to different report")
                 if observation["payload"].get("period_id") != payload.get("period_id"):
                     raise GovernanceError("report assessment observation belongs to different period")
-            controls, state, gaps = _expected_controls(report, observation)
+            controls, state, gaps = _expected_controls(
+                report,
+                observation,
+                metric_definitions_present=bool(expected_metrics),
+            )
             if payload.get("control_assessments") != controls:
                 raise GovernanceError("report assessment controls do not match embedded observation and thresholds")
             if payload.get("state") != state or payload.get("gaps") != gaps:

@@ -1,3 +1,4 @@
+from dataclasses import replace
 import unittest
 
 import test_reporting as reporting_test_module
@@ -70,6 +71,61 @@ class ReportingHardeningTests(unittest.TestCase):
             source_revision="reporting-no-metric-hardening",
         )
         self.assertIn("reporting:no_metric_definitions:empty-report", dossier.findings)
+        verify_dossier_document(dossier_document(dossier))
+
+    def test_historical_assessment_remains_verifiable_after_source_version_change(self):
+        (
+            assets,
+            semantic,
+            lineage,
+            quality,
+            controls,
+            reporting,
+            asset,
+            report,
+            _,
+        ) = reporting_test_module.ReportingTests()._stack()
+        reporting_test_module.ReportingTests()._observation(reporting, report)
+        historical = reporting.evaluate_report(
+            report,
+            "2026-08",
+            assessed_at="2026-08-19T08:02:00Z",
+        )
+        self.assertEqual(historical.state, ReportingAssessmentState.MET)
+
+        assets.register_asset(
+            replace(
+                asset,
+                asset_version=2,
+                name="Risk Exposure v2",
+                registered_at="2026-08-19T09:10:00Z",
+            )
+        )
+        dossier = GovernanceDossierBuilder(
+            assets,
+            semantic,
+            lineage,
+            quality,
+            controls,
+            reporting_registry=reporting,
+        ).build(
+            "bank-a",
+            generated_at="2026-08-19T09:11:00Z",
+            source_revision="reporting-source-version-change",
+        )
+        self.assertEqual(dossier.state.value, "revalidation_required")
+        self.assertTrue(
+            any(
+                item.startswith("reporting:metric:capital-risk:total-exposure:report metric source asset is stale")
+                for item in dossier.revalidation_findings
+            )
+        )
+        self.assertTrue(
+            any(
+                item.startswith("reporting:assessment:capital-risk:2026-08:report metric source asset is stale")
+                for item in dossier.revalidation_findings
+            )
+        )
         verify_dossier_document(dossier_document(dossier))
 
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Recovery Assessment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","policy_digest","backup_digest","restore_verification_digest","assessed_at","controls","state","schema_version","production_recovery_effectiveness_determined","regulatory_compliance_determined"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "policy_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "backup_digest": {"anyOf":[{"type":"null"},{"type":"string","pattern":"^[0-9a-f]{64}$"}]},
+    "restore_verification_digest": {"anyOf":[{"type":"null"},{"type":"string","pattern":"^[0-9a-f]{64}$"}]},
+    "assessed_at": {"type":"integer","minimum":0},
+    "controls": {
+      "type":"array","minItems":5,"uniqueItems":true,
+      "items": {
+        "type":"object","additionalProperties":false,
+        "required":["control","state","observed_value","threshold_value","reason_code"],
+        "properties": {
+          "control":{"enum":["backup_freshness","retention_schedule","restore_integrity","rpo","rto"]},
+          "state":{"enum":["met","breached","incomplete"]},
+          "observed_value":{"anyOf":[{"type":"integer","minimum":0},{"type":"boolean"},{"type":"null"}]},
+          "threshold_value":{"anyOf":[{"type":"integer","minimum":0},{"type":"boolean"},{"type":"null"}]},
+          "reason_code":{"type":"string","minLength":1,"maxLength":256}
+        }
+      }
+    },
+    "state": {"enum":["met","breached","incomplete"]},
+    "schema_version": {"const":"datagovops.recovery-assessment.v1"},
+    "production_recovery_effectiveness_determined": {"const":false},
+    "regulatory_compliance_determined": {"const":false}
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Audit Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","sequence","event_type","actor_id","subject_type","subject_digest","occurred_at","previous_event_digest","metadata_digest","schema_version","raw_content_logged","secret_material_logged"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "sequence": {"type":"integer","minimum":1},
+    "event_type": {"type":"string","minLength":1,"maxLength":256},
+    "actor_id": {"type":"string","minLength":1,"maxLength":256},
+    "subject_type": {"type":"string","minLength":1,"maxLength":256},
+    "subject_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "occurred_at": {"type":"integer","minimum":0},
+    "previous_event_digest": {"anyOf":[{"type":"null"},{"type":"string","pattern":"^[0-9a-f]{64}$"}]},
+    "metadata_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "schema_version": {"const":"datagovops.audit-event.v1"},
+    "raw_content_logged": {"const":false},
+    "secret_material_logged": {"const":false}
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Audit Chain Checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","through_sequence","event_count","head_event_digest","captured_at","schema_version","external_immutability_verified"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "through_sequence": {"type":"integer","minimum":1},
+    "event_count": {"type":"integer","minimum":1},
+    "head_event_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "captured_at": {"type":"integer","minimum":0},
+    "schema_version": {"const":"datagovops.audit-chain-checkpoint.v1"},
+    "external_immutability_verified": {"const":false}
+  }
+}

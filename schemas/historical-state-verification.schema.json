@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Historical State Verification v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","state_id","backup_digest","restore_verification_digest","expected_state_digest","recovered_state_digest","verified_at","state","schema_version","production_history_reconstruction_verified"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "state_id": {"type":"string","minLength":1,"maxLength":256},
+    "backup_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "restore_verification_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "expected_state_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "recovered_state_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "verified_at": {"type":"integer","minimum":0},
+    "state": {"enum":["met","breached"]},
+    "schema_version": {"const":"datagovops.historical-state-verification.v1"},
+    "production_history_reconstruction_verified": {"const":false}
+  }
+}

@@ -26,6 +26,33 @@ from .access_retention import (
     RetentionSchedule,
 )
 from .access_retention_strict import AccessRetentionPrivacyRegistry
+from .audit_recovery import (
+    AUDIT_CHECKPOINT_SCHEMA_VERSION,
+    AUDIT_EVENT_SCHEMA_VERSION,
+    BACKUP_EVIDENCE_SCHEMA_VERSION,
+    HISTORICAL_STATE_SCHEMA_VERSION,
+    RECOVERY_ASSESSMENT_SCHEMA_VERSION,
+    RECOVERY_POLICY_SCHEMA_VERSION,
+    RESTORE_VERIFICATION_SCHEMA_VERSION,
+    AuditChainCheckpoint,
+    AuditEvent,
+    BackupEvidence,
+    HistoricalStateVerification,
+    RecoveryAssessment,
+    RecoveryAssessmentState,
+    RecoveryControlAssessment,
+    RecoveryPolicy,
+    RestoreVerification,
+    append_audit_event,
+    assess_recovery,
+    build_audit_checkpoint,
+    build_backup_evidence,
+    build_historical_state_verification,
+    build_restore_verification,
+    sha256_bytes,
+    verify_audit_chain,
+    verify_backup_content,
+)
 from .bcbs239 import (
     AggregationAssessmentState,
     AggregationLevel,
@@ -305,6 +332,34 @@ __all__ = [
     "verify_release_manifest_document",
     "verify_signed_governance_evidence_document",
 ]
+
+__all__.extend([
+    "AUDIT_CHECKPOINT_SCHEMA_VERSION",
+    "AUDIT_EVENT_SCHEMA_VERSION",
+    "BACKUP_EVIDENCE_SCHEMA_VERSION",
+    "HISTORICAL_STATE_SCHEMA_VERSION",
+    "RECOVERY_ASSESSMENT_SCHEMA_VERSION",
+    "RECOVERY_POLICY_SCHEMA_VERSION",
+    "RESTORE_VERIFICATION_SCHEMA_VERSION",
+    "AuditChainCheckpoint",
+    "AuditEvent",
+    "BackupEvidence",
+    "HistoricalStateVerification",
+    "RecoveryAssessment",
+    "RecoveryAssessmentState",
+    "RecoveryControlAssessment",
+    "RecoveryPolicy",
+    "RestoreVerification",
+    "append_audit_event",
+    "assess_recovery",
+    "build_audit_checkpoint",
+    "build_backup_evidence",
+    "build_historical_state_verification",
+    "build_restore_verification",
+    "sha256_bytes",
+    "verify_audit_chain",
+    "verify_backup_content",
+])
 
 __version__ = PACKAGE_VERSION
 

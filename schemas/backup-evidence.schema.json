@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Backup Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","backup_id","policy_digest","source_state_digest","source_state_recorded_at","started_at","completed_at","backup_artifact_sha256","backup_size_bytes","storage_reference","retention_expires_at","schema_version","production_backup_verified"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "backup_id": {"type":"string","minLength":1,"maxLength":256},
+    "policy_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "source_state_digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "source_state_recorded_at": {"type":"integer","minimum":0},
+    "started_at": {"type":"integer","minimum":0},
+    "completed_at": {"type":"integer","minimum":0},
+    "backup_artifact_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "backup_size_bytes": {"type":"integer","minimum":1},
+    "storage_reference": {"type":"string","minLength":1,"maxLength":2048},
+    "retention_expires_at": {"type":"integer","minimum":0},
+    "schema_version": {"const":"datagovops.backup-evidence.v1"},
+    "production_backup_verified": {"const":false}
+  }
+}

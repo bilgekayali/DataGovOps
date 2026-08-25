@@ -1,0 +1,87 @@
+name: Audit Recovery Evidence
+
+on:
+  push:
+    branches: [main, "agent/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-recovery-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Run audit and recovery tests
+        run: |
+          python -m unittest tests.test_audit_recovery -v
+          python -m unittest tests.test_audit_recovery_schemas -v
+      - name: Validate strict audit/recovery schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          names = [
+              "audit-event.schema.json",
+              "audit-chain-checkpoint.schema.json",
+              "recovery-policy.schema.json",
+              "backup-evidence.schema.json",
+              "restore-verification.schema.json",
+              "historical-state-verification.schema.json",
+              "recovery-assessment.schema.json",
+          ]
+          for name in names:
+              schema = json.loads((Path("schemas") / name).read_text(encoding="utf-8"))
+              jsonschema.Draft202012Validator.check_schema(schema)
+              assert schema["additionalProperties"] is False
+              print(name)
+          PY
+      - name: Enforce offline audit/recovery boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          path = Path("src/datagovops/audit_recovery.py")
+          banned = {"asyncio", "http", "requests", "socket", "subprocess", "urllib"}
+          tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  roots = {alias.name.split(".")[0] for alias in node.names}
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  roots = {node.module.split(".")[0]}
+              else:
+                  continue
+              if roots & banned:
+                  raise SystemExit(f"{path}: forbidden online/execution capability import")
+          PY
+      - name: Clean-wheel audit/recovery smoke
+        run: |
+          python -m pip install build
+          python -m build --wheel
+          python -m venv /tmp/datagovops-audit-recovery
+          /tmp/datagovops-audit-recovery/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-audit-recovery/bin/python - <<'PY'
+          import datagovops
+          from datagovops.audit_recovery import RecoveryPolicy, assess_recovery
+
+          assert datagovops.__version__ == "0.5.0"
+          policy = RecoveryPolicy(
+              institution_id="bank-a", policy_id="recovery", policy_version=1,
+              owner_id="owner", maximum_rpo_seconds=60, maximum_rto_seconds=120,
+              maximum_backup_age_seconds=600, minimum_retention_seconds=3600,
+              approved_at=1,
+          )
+          assessment = assess_recovery(policy=policy, assessed_at=2, backup=None, restore=None)
+          assert assessment.state.value == "incomplete"
+          assert assessment.production_recovery_effectiveness_determined is False
+          print(datagovops.__version__)
+          PY

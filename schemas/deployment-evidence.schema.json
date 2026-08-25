@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Deployment Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","environment_id","workload_id","image","runtime_security","network_boundary","secret_references","manifest_sha256","validator_id","observed_at","negative_path_confirmed","schema_version","production_deployment_validated"],
+  "properties": {
+    "institution_id": {"type":"string","minLength":1,"maxLength":256},
+    "environment_id": {"type":"string","minLength":1,"maxLength":256},
+    "workload_id": {"type":"string","minLength":1,"maxLength":256},
+    "image": {
+      "type":"object","additionalProperties":false,
+      "required":["repository","digest","schema_version","canonical"],
+      "properties":{
+        "repository":{"type":"string","minLength":1,"maxLength":512,"pattern":"^[^@]+$"},
+        "digest":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "schema_version":{"const":"datagovops.image-reference.v1"},
+        "canonical":{"type":"string","pattern":"^.+@sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "runtime_security": {
+      "type":"object","additionalProperties":false,
+      "required":["run_as_non_root","read_only_root_filesystem","allow_privilege_escalation","privileged","drop_all_capabilities","seccomp_runtime_default","host_network","host_pid","host_ipc","automount_service_account_token"],
+      "properties":{
+        "run_as_non_root":{"type":"boolean"},
+        "read_only_root_filesystem":{"type":"boolean"},
+        "allow_privilege_escalation":{"type":"boolean"},
+        "privileged":{"type":"boolean"},
+        "drop_all_capabilities":{"type":"boolean"},
+        "seccomp_runtime_default":{"type":"boolean"},
+        "host_network":{"type":"boolean"},
+        "host_pid":{"type":"boolean"},
+        "host_ipc":{"type":"boolean"},
+        "automount_service_account_token":{"type":"boolean"}
+      }
+    },
+    "network_boundary": {
+      "type":"object","additionalProperties":false,
+      "required":["default_deny_ingress","default_deny_egress","allowed_egress_destinations"],
+      "properties":{
+        "default_deny_ingress":{"type":"boolean"},
+        "default_deny_egress":{"type":"boolean"},
+        "allowed_egress_destinations":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":512}}
+      }
+    },
+    "secret_references": {
+      "type":"array","uniqueItems":true,
+      "items":{
+        "type":"object","additionalProperties":false,
+        "required":["provider","secret_id","version"],
+        "properties":{
+          "provider":{"type":"string","minLength":1,"maxLength":256},
+          "secret_id":{"type":"string","minLength":1,"maxLength":512},
+          "version":{"type":"string","minLength":1,"maxLength":256}
+        }
+      }
+    },
+    "manifest_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "validator_id":{"type":"string","minLength":1,"maxLength":256},
+    "observed_at":{"type":"integer","minimum":0},
+    "negative_path_confirmed":{"type":"boolean"},
+    "schema_version":{"const":"datagovops.deployment-evidence.v1"},
+    "production_deployment_validated":{"const":false}
+  }
+}

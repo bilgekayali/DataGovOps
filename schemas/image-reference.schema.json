@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Immutable Image Reference v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository", "digest", "schema_version", "canonical"],
+  "properties": {
+    "repository": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^[^@]+$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "schema_version": {"const": "datagovops.image-reference.v1"},
+    "canonical": {"type": "string", "pattern": "^.+@sha256:[0-9a-f]{64}$"}
+  }
+}

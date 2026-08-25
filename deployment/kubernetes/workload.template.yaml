@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datagovops
+  labels:
+    app.kubernetes.io/name: datagovops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: datagovops
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: datagovops
+    spec:
+      automountServiceAccountToken: false
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: datagovops
+          image: "${DATAGOVOPS_IMAGE_DIGEST}"
+          imagePullPolicy: IfNotPresent
+          args: ["--version"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: external-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: external-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: datagovops-external-secrets

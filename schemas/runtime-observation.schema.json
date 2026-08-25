@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Runtime Observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["institution_id","environment_id","workload_id","observation_type","status","evidence_sha256","observed_at","raw_content_logged","secret_material_logged","production_observability_validated","schema_version"],
+  "properties": {
+    "institution_id":{"type":"string","minLength":1,"maxLength":256},
+    "environment_id":{"type":"string","minLength":1,"maxLength":256},
+    "workload_id":{"type":"string","minLength":1,"maxLength":256},
+    "observation_type":{"type":"string","minLength":1,"maxLength":256},
+    "status":{"type":"string","minLength":1,"maxLength":256},
+    "evidence_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "observed_at":{"type":"integer","minimum":0},
+    "raw_content_logged":{"const":false},
+    "secret_material_logged":{"const":false},
+    "production_observability_validated":{"const":false},
+    "schema_version":{"const":"datagovops.runtime-observation.v1"}
+  }
+}

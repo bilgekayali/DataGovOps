@@ -1,0 +1,113 @@
+name: Deployment Runtime Hardening
+
+on:
+  push:
+    branches: [main, "agent/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  deployment-runtime-hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Run deployment hardening tests
+        run: |
+          python -m unittest tests.test_deployment_hardening -v
+          python -m unittest tests.test_deployment_hardening_schemas -v
+      - name: Validate strict deployment schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          names = [
+              "image-reference.schema.json",
+              "deployment-evidence.schema.json",
+              "runtime-observation.schema.json",
+              "deployment-assessment.schema.json",
+          ]
+          for name in names:
+              schema = json.loads((Path("schemas") / name).read_text(encoding="utf-8"))
+              jsonschema.Draft202012Validator.check_schema(schema)
+              assert schema["additionalProperties"] is False
+              print(name)
+          PY
+      - name: Validate hardened reference deployment
+        run: |
+          grep -F 'ARG BASE_IMAGE' deployment/Dockerfile.hardened.reference
+          grep -F 'FROM ${BASE_IMAGE}' deployment/Dockerfile.hardened.reference
+          ! grep -E '^ARG BASE_IMAGE=' deployment/Dockerfile.hardened.reference
+          grep -F 'USER 65532:65532' deployment/Dockerfile.hardened.reference
+          grep -F 'image: "${DATAGOVOPS_IMAGE_DIGEST}"' deployment/kubernetes/workload.template.yaml
+          grep -F 'automountServiceAccountToken: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'runAsNonRoot: true' deployment/kubernetes/workload.template.yaml
+          grep -F 'readOnlyRootFilesystem: true' deployment/kubernetes/workload.template.yaml
+          grep -F 'allowPrivilegeEscalation: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'privileged: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'drop: ["ALL"]' deployment/kubernetes/workload.template.yaml
+          grep -F 'type: RuntimeDefault' deployment/kubernetes/workload.template.yaml
+          grep -F 'hostNetwork: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'hostPID: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'hostIPC: false' deployment/kubernetes/workload.template.yaml
+          grep -F 'driver: secrets-store.csi.k8s.io' deployment/kubernetes/workload.template.yaml
+          grep -F 'policyTypes: ["Ingress"]' deployment/kubernetes/default-deny.yaml
+          grep -F 'policyTypes: ["Egress"]' deployment/kubernetes/default-deny.yaml
+          grep -F 'ingress: []' deployment/kubernetes/default-deny.yaml
+          grep -F 'egress: []' deployment/kubernetes/default-deny.yaml
+      - name: Enforce offline deployment evidence boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          path = Path("src/datagovops/deployment_hardening.py")
+          banned = {"asyncio", "http", "requests", "socket", "subprocess", "urllib"}
+          tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  roots = {alias.name.split(".")[0] for alias in node.names}
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  roots = {node.module.split(".")[0]}
+              else:
+                  continue
+              if roots & banned:
+                  raise SystemExit(f"{path}: forbidden online/execution capability import")
+          PY
+      - name: Clean-wheel deployment smoke
+        run: |
+          python -m pip install build
+          python -m build --wheel
+          python -m venv /tmp/datagovops-deployment
+          /tmp/datagovops-deployment/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-deployment/bin/python - <<'PY'
+          import datagovops
+          from datagovops.deployment_hardening import (
+              DeploymentEvidence,
+              ImmutableImageReference,
+              NetworkBoundary,
+              RuntimeSecurityProfile,
+              assess_deployment,
+          )
+          assert datagovops.__version__ == "0.6.0"
+          evidence = DeploymentEvidence(
+              institution_id="bank-a", environment_id="reference", workload_id="datagovops",
+              image=ImmutableImageReference("registry.example/datagovops", "a" * 64),
+              runtime_security=RuntimeSecurityProfile(True, True, False, False, True, True, False, False, False, False),
+              network_boundary=NetworkBoundary(True, True, ()), secret_references=(),
+              manifest_sha256="b" * 64, validator_id="validator", observed_at=1,
+              negative_path_confirmed=True,
+          )
+          assessment = assess_deployment(evidence, assessed_at=2)
+          assert assessment.state.value == "represented"
+          assert assessment.production_effectiveness_determined is False
+          print(datagovops.__version__)
+          PY

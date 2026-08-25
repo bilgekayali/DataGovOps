@@ -81,7 +81,7 @@ jobs:
           /tmp/datagovops-control-matrix/bin/python -m pip install dist/*.whl
           /tmp/datagovops-control-matrix/bin/python - <<'PY'
           import datagovops
-          from datagovops.control_matrix import (
+          from datagovops import (
               ControlDefinition,
               ControlDomain,
               ControlEvidenceRegistry,
@@ -89,7 +89,7 @@ jobs:
               EvidenceSourceBoundary,
           )
 
-          assert datagovops.__version__ == "0.7.0"
+          assert datagovops.__version__ == "0.8.0"
           registry = ControlEvidenceRegistry()
           control = ControlDefinition(
               institution_id="bank-a",

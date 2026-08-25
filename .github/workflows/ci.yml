@@ -56,6 +56,7 @@ jobs:
               Path("src/datagovops/reporting.py"),
               Path("src/datagovops/reporting_strict.py"),
               Path("src/datagovops/bcbs239.py"),
+              Path("src/datagovops/security.py"),
               Path("src/datagovops/dossier.py"),
               Path("src/datagovops/dossier_release.py"),
               Path("src/datagovops/dossier_release_strict.py"),
@@ -99,7 +100,10 @@ jobs:
               BCBS239AssuranceRegistry,
               DataAssetRegistry,
               DataAssetValidator,
+              EvidenceKeyReference,
               GovernanceDossierBuilder,
+              IdentityPolicy,
+              InstitutionContext,
               LineageRegistry,
               QualityRegistry,
               ReportingGovernanceRegistry,
@@ -116,6 +120,9 @@ jobs:
           assert AccessRetentionPrivacyRegistry is not None
           assert ReportingGovernanceRegistry is not None
           assert BCBS239AssuranceRegistry is not None
+          assert InstitutionContext is not None
+          assert IdentityPolicy is not None
+          assert EvidenceKeyReference is not None
           assert GovernanceDossierBuilder is not None
           assert verify_dossier_document is not None
           print(datagovops.__version__)

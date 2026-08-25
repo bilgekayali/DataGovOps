@@ -76,11 +76,27 @@ Completion of #3 through #8 constitutes the **DataGovOps v0.1.0 foundation code/
 - [x] strict Draft 2020-12 reporting schemas and Python 3.11/3.12/3.13 release gates;
 - [x] `0.2.0` package/code boundary with explicit BCBS 239/regulatory-reporting non-claims.
 
+## v0.3 BCBS 239 multi-report assurance train
+
+### v0.3.0 — Report taxonomy, risk-data portfolio and accountable aggregation assurance (#17)
+- [x] institution-scoped report taxonomy with contiguous immutable version history;
+- [x] exact current governed-report binding to institution-owned risk domains and aggregation levels;
+- [x] versioned risk-data portfolios bound to exact report and taxonomy digests;
+- [x] configured required risk-domain coverage without automated legal-applicability inference;
+- [x] deterministic multi-report aggregation over current v0.2 report-assurance assessments;
+- [x] fail-closed missing/incomplete report evidence and missing accountable report-owner attestations;
+- [x] breached-state propagation for breached reports and rejected/escalated owner attestations;
+- [x] exact report-assessment and report-attestation digest manifests with deterministic counts/gaps;
+- [x] accountable portfolio-owner executive attestation with approval blocked for non-met aggregation state;
+- [x] strict Draft 2020-12 BCBS assurance schemas, offline-capability guard and clean-wheel smoke;
+- [x] structural non-claims for BCBS 239 compliance, risk-data accuracy and supervisory acceptance;
+- [x] `0.3.0` package/code boundary.
+
 ## Later hardening toward v1
 
-- deeper BCBS 239 assurance mappings, report taxonomy and multi-report aggregation evidence;
 - PostgreSQL tenant isolation/RLS and institution-owned cryptographic boundaries;
 - institution-owned signing keys, external immutable anchors and trusted timestamping;
 - immutable audit/recovery evidence;
 - deployment, supply-chain and release hardening;
-- stable API/data compatibility policy and v1 production reference.
+- BCBS 239 / privacy / security control-evidence mapping without automated compliance scoring;
+- stable API/data compatibility policy and v1 stable reference.

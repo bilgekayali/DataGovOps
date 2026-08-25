@@ -63,6 +63,24 @@ from .bcbs239 import (
     RiskDataDomain,
     RiskDataPortfolio,
 )
+from .control_matrix import (
+    CONTROL_ASSESSMENT_SCHEMA_VERSION,
+    CONTROL_DEFINITION_SCHEMA_VERSION,
+    CONTROL_EVIDENCE_MATRIX_SCHEMA_VERSION,
+    CONTROL_EVIDENCE_REFERENCE_SCHEMA_VERSION,
+    ControlAssessment,
+    ControlAssessmentState,
+    ControlDefinition,
+    ControlDomain,
+    ControlEvidenceMatrix,
+    ControlEvidenceReference,
+    ControlEvidenceRegistry,
+    ControlMatrixRow,
+    EvidenceRequirement,
+    EvidenceSourceBoundary,
+    FrameworkReference,
+    MatrixState,
+)
 from .deployment_hardening import (
     DEPLOYMENT_ASSESSMENT_SCHEMA_VERSION,
     DEPLOYMENT_EVIDENCE_SCHEMA_VERSION,
@@ -400,6 +418,25 @@ __all__.extend([
     "assert_same_institution",
     "deployment_evidence_digest",
     "deployment_evidence_document",
+])
+
+__all__.extend([
+    "CONTROL_ASSESSMENT_SCHEMA_VERSION",
+    "CONTROL_DEFINITION_SCHEMA_VERSION",
+    "CONTROL_EVIDENCE_MATRIX_SCHEMA_VERSION",
+    "CONTROL_EVIDENCE_REFERENCE_SCHEMA_VERSION",
+    "ControlAssessment",
+    "ControlAssessmentState",
+    "ControlDefinition",
+    "ControlDomain",
+    "ControlEvidenceMatrix",
+    "ControlEvidenceReference",
+    "ControlEvidenceRegistry",
+    "ControlMatrixRow",
+    "EvidenceRequirement",
+    "EvidenceSourceBoundary",
+    "FrameworkReference",
+    "MatrixState",
 ])
 
 __version__ = PACKAGE_VERSION

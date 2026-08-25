@@ -97,7 +97,7 @@ jobs:
               RuntimeSecurityProfile,
               assess_deployment,
           )
-          assert datagovops.__version__ == "0.6.0"
+          assert datagovops.__version__ == "0.7.0"
           evidence = DeploymentEvidence(
               institution_id="bank-a", environment_id="reference", workload_id="datagovops",
               image=ImmutableImageReference("registry.example/datagovops", "a" * 64),

@@ -68,7 +68,7 @@
       "required":["schema_version","release_version","institution_id","generated_at","source_revision","state","findings","revalidation_findings","active_exception_digests","coverage","domain_snapshots","artifacts","exceptions","legal_compliance_determined"],
       "properties":{
         "schema_version":{"const":"datagovops.governance-dossier.v1"},
-        "release_version":{"const":"0.3.0"},
+        "release_version":{"const":"0.4.0"},
         "institution_id":{"type":"string","minLength":1,"maxLength":256},
         "generated_at":{"type":"string","format":"date-time"},
         "source_revision":{"type":"string","minLength":1,"maxLength":256},

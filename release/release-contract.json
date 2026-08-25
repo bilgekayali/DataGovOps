@@ -2,6 +2,8 @@
   "schema_version": "datagovops.release-contract.v1",
   "candidate_version": "0.9.0",
   "target_stable_version": "1.0.0",
+  "current_release_version": "1.0.0",
+  "release_stage": "stable",
   "public_api": {
     "symbol_count": 199,
     "sha256": "b6f56ad2ee9611064a5241ec7a0d7c171b2846c2bb5601266388f29ca3d369fa"

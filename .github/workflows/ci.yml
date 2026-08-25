@@ -129,7 +129,8 @@ jobs:
               verify_dossier_document,
           )
 
-          assert datagovops.__version__ == "0.9.0"
+          assert datagovops.__version__ == "1.0.0"
+          assert datagovops.RELEASE_VERSION == "1.0.0"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None

@@ -13,10 +13,10 @@
     "CodeQL",
     "Control Evidence Matrix",
     "Deployment Runtime Hardening",
-    "Release Candidate",
     "Release Evidence Integrity",
-    "Security Boundary"
+    "Security Boundary",
+    "Stable Release Gate"
   ],
   "enforcement_verified": false,
-  "verification_note": "Reference policy only. Live main branch protection/ruleset enforcement was not present when the v0.9 release-candidate train began and is not inferred by this file."
+  "verification_note": "Reference policy only. Live main branch protection/ruleset enforcement is not present or independently verified at the v1.0 stable-reference promotion and is not inferred by this file."
 }

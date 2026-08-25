@@ -1,0 +1,22 @@
+{
+  "schema_version": "datagovops.release-contract.v1",
+  "candidate_version": "0.9.0",
+  "target_stable_version": "1.0.0",
+  "public_api": {
+    "symbol_count": 0,
+    "sha256": "PENDING"
+  },
+  "schema_set": {
+    "file_count": 0,
+    "sha256": "PENDING"
+  },
+  "repository_governance_enforcement_verified": false,
+  "requires_human_release_decision": true,
+  "non_claims": {
+    "production_readiness_determined": false,
+    "regulatory_compliance_determined": false,
+    "supervisory_acceptance_determined": false,
+    "certification_determined": false,
+    "production_control_effectiveness_determined": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": "datagovops.repository-governance.v1",
+  "default_branch": "main",
+  "pull_request_required": true,
+  "required_approvals": 0,
+  "conversation_resolution_required": true,
+  "force_pushes_allowed": false,
+  "branch_deletion_allowed": false,
+  "required_workflow_names": [
+    "Audit Recovery Evidence",
+    "BCBS 239 Assurance",
+    "CI",
+    "CodeQL",
+    "Control Evidence Matrix",
+    "Deployment Runtime Hardening",
+    "Release Candidate",
+    "Release Evidence Integrity",
+    "Security Boundary"
+  ],
+  "enforcement_verified": false,
+  "verification_note": "Reference policy only. Live main branch protection/ruleset enforcement was not present when the v0.9 release-candidate train began and is not inferred by this file."
+}

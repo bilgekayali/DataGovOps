@@ -92,7 +92,7 @@
 
 ## v0.9 release-candidate train
 
-### v0.9.0 — Public-contract freeze and release engineering
+### v0.9.0 — Public-contract freeze and release engineering (#23)
 - [x] freeze the intentional `datagovops.__all__` surface with a deterministic SHA-256 fingerprint;
 - [x] freeze the exact-byte public `schemas/*.schema.json` set with a deterministic SHA-256 fingerprint;
 - [x] decouple governance-dossier semantic-version metadata from one package version before schema freeze;
@@ -106,6 +106,11 @@
 
 ## v1.0 stable reference
 
-- [ ] promote package metadata and runtime release version to `1.0.0` without changing the frozen v0.9 public API/schema fingerprints;
-- [ ] move package classifier to Production/Stable after all RC gates remain green on the exact v1 promotion head;
-- [ ] retain explicit production-readiness, regulatory-compliance and supervisory-acceptance non-claims unless external evidence exists.
+### v1.0.0 — Stable public contract promotion
+- [x] promote package metadata and runtime release version to `1.0.0` without changing the frozen v0.9 public API/schema fingerprints;
+- [x] preserve the v0.9 candidate provenance while marking the current release contract `stable`;
+- [x] move package classifier to `Development Status :: 5 - Production/Stable` while explicitly separating package maturity from production-deployment readiness;
+- [x] replace the candidate acceptance context with a stable release gate while retaining exact action pins, CodeQL and all prior boundary gates;
+- [x] retain `repository_governance_enforcement_verified=false` unless live GitHub enforcement is independently verified;
+- [x] retain explicit production-readiness, regulatory-compliance, certification and supervisory-acceptance non-claims;
+- [x] keep tag, GitHub Release, package publication and deployment as separate explicit decisions.

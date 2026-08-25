@@ -1,19 +1,19 @@
 # DataGovOps Compatibility Policy
 
-## Release-candidate freeze
+## Frozen v1.0 public contract
 
-DataGovOps v0.9.0 is the release-candidate boundary for the v1.0 stable reference. The candidate freezes two intentional public contracts:
+DataGovOps v0.9.0 established the release-candidate freeze for the v1.0 stable reference. DataGovOps v1.0.0 promotes that candidate without changing either frozen intentional public contract:
 
 1. the sorted symbol set exported through `datagovops.__all__`;
 2. the exact-byte set of public JSON Schemas under `schemas/*.schema.json`.
 
-The committed fingerprints are recorded in `release/release-contract.json` and verified by `tools/release_contract.py`. A change to either fingerprint after the v0.9.0 freeze requires an explicit release-candidate reset and is not treated as an incidental v1.0 promotion change.
+The committed fingerprints are recorded in `release/release-contract.json` and verified by `tools/release_contract.py`. The stable promotion preserves the v0.9.0 candidate provenance and records `1.0.0` as the current stable release version. A fingerprint change is therefore not an incidental patch to the stable promotion; it is a public-contract evolution that must follow the compatibility rules below.
 
-`__version__`, package metadata, release notes and other release metadata may advance from `0.9.0` to `1.0.0` without changing the frozen public symbol set. The governance-dossier schema therefore validates `release_version` as semantic-version metadata rather than hard-coding one package version; offline/runtime verification remains responsible for binding evidence to the package release being evaluated.
+The governance-dossier schema validates `release_version` as semantic-version metadata rather than hard-coding one package version. Offline/runtime verification remains responsible for binding evidence to the package release being evaluated.
 
 ## Stable compatibility after v1.0
 
-After v1.0.0, DataGovOps follows semantic-versioning principles for its intentional public surface:
+DataGovOps follows semantic-versioning principles for its intentional public surface:
 
 - removing or renaming a public Python symbol, changing required call semantics incompatibly, or making a public schema reject documents valid under the prior stable contract requires a new major version;
 - backward-compatible additive capabilities belong in a minor version;
@@ -24,8 +24,10 @@ Schema evolution must preserve explicit non-claims. A schema or API addition mus
 
 ## CLI
 
-The `datagovops` executable and the current `--version`, `digest`, `schema`, and `dossier verify` command families are supported release surfaces. Their exact textual output is not frozen, but documented command intent and successful machine operation must remain compatible across the v1 stable line unless a major release states otherwise.
+The `datagovops` executable and the current `--version`, `digest`, `schema`, and `dossier verify` command families are supported release surfaces. Their exact textual output is not frozen, but documented command intent and successful machine operation must remain compatible across the v1 stable line unless a new major release states otherwise.
 
-## Release decision
+## Release and publication decisions
 
-Passing the release-candidate gate establishes only repository-level contract consistency for the represented reference implementation. Promotion to v1.0.0 remains an explicit human decision. It does not establish production readiness or regulatory acceptance.
+Passing the stable release gate establishes repository-level consistency with the represented frozen v1.0 contract. The `Production/Stable` package classifier is an ecosystem maturity signal for that contract; it is not proof of production deployment readiness.
+
+Git tags, GitHub Releases, package-registry publication, container publication and production deployment remain separate explicit decisions. None of them is implied by the source-tree version alone. Likewise, stable promotion does not establish regulatory compliance, certification, supervisory acceptance or real-world control effectiveness.

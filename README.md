@@ -6,29 +6,28 @@
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, business purpose, quality, access, retention, privacy/security obligations, reporting controls, verifiable governance evidence and deterministic operational assurance.
 
-Current code/package milestone: **DataGovOps v0.9.0 release-candidate boundary** (`0.9.0`).
+Current code/package milestone: **DataGovOps v1.0.0 stable reference** (`1.0.0`).
 
-A package version in the codebase does **not** by itself mean that a Git tag, GitHub Release, container image or production deployment has been published. Those facts must be verified separately.
+A package version or `Production/Stable` package classifier does **not** by itself mean that a Git tag, GitHub Release, container image, production deployment, regulatory approval or production-readiness assessment exists. Those facts must be verified separately.
 
-## v0.9.0 release-candidate boundary
+## v1.0.0 stable-reference boundary
 
-v0.9 retains the v0.1-v0.8 governance and assurance boundaries and freezes the intentional public contract for the v1.0 stable-reference promotion.
+v1.0 promotes the v0.9 release candidate without changing the frozen intentional public contract.
 
-The release-candidate boundary includes:
+The stable-reference boundary preserves:
 
-- a deterministic fingerprint of the sorted Python symbols exported through `datagovops.__all__`;
-- a deterministic exact-byte fingerprint of every public `schemas/*.schema.json` document;
-- a committed `release/release-contract.json` used by the release-candidate gate;
-- a compatibility policy defining the v0.9 -> v1 freeze and post-v1 semantic-versioning expectations;
-- governance-dossier `release_version` decoupled from one package version so the schema can remain frozen across the v1 promotion while runtime verification still binds evidence to the evaluated package release;
-- all third-party GitHub Actions references pinned to exact commit SHAs;
-- CodeQL analysis for Python;
-- a dedicated Release Candidate workflow that verifies the public-API/schema fingerprints, package/dossier version alignment, Beta classifier, exact action pins, governance-policy non-claims, contract tests and a clean-wheel installation;
-- a machine-readable repository-governance expectation file with PR/workflow/no-force-push/no-delete expectations;
-- explicit `enforcement_verified=false` because live branch protection/ruleset enforcement is not inferred from the reference policy;
-- removal of the stale v0.1 publication workflow from the active workflow surface.
+- **199 intentional public Python symbols** exported through `datagovops.__all__`, frozen at SHA-256 `b6f56ad2ee9611064a5241ec7a0d7c171b2846c2bb5601266388f29ca3d369fa`;
+- **63 public Draft 2020-12 JSON Schemas** under `schemas/*.schema.json`, frozen as an exact-byte set at SHA-256 `76f2a6aaaf13961781da79568ebd0ea9060fbc74b604c31c6a68df6a7b97ea6b`;
+- semantic-versioning and compatibility expectations in [`COMPATIBILITY.md`](COMPATIBILITY.md);
+- runtime/package release binding at `1.0.0` while the governance-dossier schema remains package-version decoupled;
+- exact-commit GitHub Actions pins and Python CodeQL;
+- a dedicated **Stable Release Gate** that verifies the frozen API/schema fingerprints, stable package metadata/classifier, package/dossier version alignment, repository-governance non-claims, contract tests and clean-wheel installation;
+- the v0.1-v0.8 governance, reporting, security, evidence-integrity, recovery, deployment and control/evidence boundaries;
+- explicit `repository_governance_enforcement_verified=false` because live branch protection/ruleset enforcement is not inferred from a committed policy file.
 
-Passing the v0.9 release-candidate gate means the repository matches its frozen represented contract. It does **not** establish production readiness, regulatory compliance, certification or supervisory acceptance.
+The `Development Status :: 5 - Production/Stable` classifier describes package/API maturity. It is **not** a claim that the reference has been deployed safely in a real financial institution, passed independent security validation, satisfies a regulator, or is fit for a specific production environment.
+
+No v1.0.0 Git tag, GitHub Release, package publication or deployment is implied by the source-tree promotion. Publication remains a separate explicit decision.
 
 See [`COMPATIBILITY.md`](COMPATIBILITY.md) and the files under [`release/`](release/).
 

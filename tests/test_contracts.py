@@ -21,9 +21,18 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ContractTests(unittest.TestCase):
-    def test_version_is_v0_9_0_at_release_gate(self):
-        self.assertEqual(datagovops.__version__, "0.9.0")
-        self.assertEqual(datagovops.RELEASE_VERSION, "0.9.0")
+    def test_version_is_v1_0_0_at_stable_gate(self):
+        self.assertEqual(datagovops.__version__, "1.0.0")
+        self.assertEqual(datagovops.RELEASE_VERSION, "1.0.0")
+
+    def test_release_contract_preserves_v09_freeze_at_stable_promotion(self):
+        contract = json.loads((ROOT / "release" / "release-contract.json").read_text(encoding="utf-8"))
+        self.assertEqual(contract["candidate_version"], "0.9.0")
+        self.assertEqual(contract["target_stable_version"], "1.0.0")
+        self.assertEqual(contract["current_release_version"], "1.0.0")
+        self.assertEqual(contract["release_stage"], "stable")
+        self.assertTrue(contract["requires_human_release_decision"])
+        self.assertFalse(contract["repository_governance_enforcement_verified"])
 
     def _schema(self, name):
         schema = json.loads((ROOT / "schemas" / name).read_text(encoding="utf-8"))
@@ -104,7 +113,7 @@ class ContractTests(unittest.TestCase):
             "datagovops.data-asset-record.v1",
         )
 
-    def test_governance_dossier_schema_decouples_package_release_before_freeze(self):
+    def test_governance_dossier_schema_remains_package_decoupled_after_freeze(self):
         schema = self._schema("governance-dossier.schema.json")
         release_property = schema["$defs"]["dossier"]["properties"]["release_version"]
         self.assertNotIn("const", release_property)

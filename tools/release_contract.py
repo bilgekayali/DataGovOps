@@ -83,26 +83,46 @@ def _verify_action_pins() -> None:
         raise SystemExit("\n".join(failures))
 
 
-def _verify_candidate_metadata(manifest: dict) -> None:
+def _verify_release_metadata(manifest: dict) -> None:
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     candidate = manifest.get("candidate_version")
-    if project.get("version") != candidate:
-        raise SystemExit("pyproject version does not match release-contract candidate_version")
+    target = manifest.get("target_stable_version")
+    current = manifest.get("current_release_version")
+    stage = manifest.get("release_stage")
+
+    if candidate != "0.9.0":
+        raise SystemExit("release contract must preserve the v0.9.0 freeze provenance")
+    if target != "1.0.0":
+        raise SystemExit("release contract must target stable version 1.0.0")
+    if stage not in {"candidate", "stable"}:
+        raise SystemExit("release contract release_stage must be candidate or stable")
+    if stage == "candidate" and current != candidate:
+        raise SystemExit("candidate release stage must use the frozen candidate version")
+    if stage == "stable" and current != target:
+        raise SystemExit("stable release stage must use the target stable version")
+    if project.get("version") != current:
+        raise SystemExit("pyproject version does not match release-contract current_release_version")
+
     classifiers = project.get("classifiers", [])
-    if "Development Status :: 4 - Beta" not in classifiers:
-        raise SystemExit("v0.9 release candidate must use the Beta package classifier")
+    expected_classifier = (
+        "Development Status :: 4 - Beta"
+        if stage == "candidate"
+        else "Development Status :: 5 - Production/Stable"
+    )
+    if expected_classifier not in classifiers:
+        raise SystemExit(f"release stage {stage} requires package classifier: {expected_classifier}")
 
     if str(ROOT / "src") not in sys.path:
         sys.path.insert(0, str(ROOT / "src"))
     import datagovops
 
-    if datagovops.__version__ != candidate or datagovops.RELEASE_VERSION != candidate:
-        raise SystemExit("package and dossier runtime release versions are not aligned with candidate_version")
+    if datagovops.__version__ != current or datagovops.RELEASE_VERSION != current:
+        raise SystemExit("package and dossier runtime release versions are not aligned with current_release_version")
 
     dossier_schema = _load_json(SCHEMA_DIR / "governance-dossier.schema.json")
     release_property = dossier_schema["$defs"]["dossier"]["properties"]["release_version"]
     if "const" in release_property or release_property.get("pattern") != SEMVER_PATTERN:
-        raise SystemExit("governance-dossier release_version must be package-decoupled before schema freeze")
+        raise SystemExit("governance-dossier release_version must remain package-decoupled after schema freeze")
 
 
 def _verify_repository_policy(manifest: dict) -> None:
@@ -113,8 +133,11 @@ def _verify_repository_policy(manifest: dict) -> None:
         raise SystemExit("reference governance policy must not claim live enforcement without external evidence")
     if manifest.get("repository_governance_enforcement_verified") is not False:
         raise SystemExit("release contract must preserve unverified repository-governance enforcement state")
+    required = policy.get("required_workflow_names")
+    if not isinstance(required, list) or "Stable Release Gate" not in required:
+        raise SystemExit("repository governance policy must require the stable release gate")
     if (WORKFLOW_DIR / "publish-v0.1.0.yml").exists():
-        raise SystemExit("stale v0.1 publication workflow must not remain in the release-candidate surface")
+        raise SystemExit("stale v0.1 publication workflow must not remain in the stable release surface")
 
 
 def verify() -> dict[str, dict[str, object]]:
@@ -135,24 +158,22 @@ def verify() -> dict[str, dict[str, object]]:
 
     if manifest.get("schema_version") != "datagovops.release-contract.v1":
         raise SystemExit("unsupported release-contract schema version")
-    if manifest.get("target_stable_version") != "1.0.0":
-        raise SystemExit("release contract must target stable version 1.0.0")
     if manifest.get("requires_human_release_decision") is not True:
-        raise SystemExit("release candidate must require an explicit human release decision")
+        raise SystemExit("stable promotion and later publication must remain explicit human decisions")
     non_claims = manifest.get("non_claims")
     if not isinstance(non_claims, dict) or not non_claims or any(value is not False for value in non_claims.values()):
         raise SystemExit("release-contract non-claims must be explicit false booleans")
 
-    _verify_candidate_metadata(manifest)
+    _verify_release_metadata(manifest)
     _verify_repository_policy(manifest)
     _verify_action_pins()
     return computed
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Emit or verify the DataGovOps release-contract freeze.")
+    parser = argparse.ArgumentParser(description="Emit or verify the DataGovOps frozen release contract.")
     parser.add_argument("--emit", action="store_true", help="print current public-API and schema-set fingerprints")
-    parser.add_argument("--verify", action="store_true", help="verify the committed release-contract pins")
+    parser.add_argument("--verify", action="store_true", help="verify the committed frozen release contract")
     args = parser.parse_args()
 
     computed = compute_fingerprints()

@@ -1,0 +1,117 @@
+name: Control Evidence Matrix
+
+on:
+  push:
+    branches: [main, "agent/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  control-evidence-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Run control/evidence matrix tests
+        run: |
+          python -m unittest tests.test_control_matrix -v
+          python -m unittest tests.test_control_matrix_schemas -v
+      - name: Validate strict control/evidence schemas and non-claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          names = [
+              "control-definition.schema.json",
+              "control-evidence-reference.schema.json",
+              "control-assessment.schema.json",
+              "control-evidence-matrix.schema.json",
+          ]
+          for name in names:
+              schema = json.loads((Path("schemas") / name).read_text(encoding="utf-8"))
+              jsonschema.Draft202012Validator.check_schema(schema)
+              assert schema["additionalProperties"] is False
+              print(name)
+
+          matrix = json.loads(Path("schemas/control-evidence-matrix.schema.json").read_text(encoding="utf-8"))
+          assert "compliance_score" not in matrix["properties"]
+          assert matrix["properties"]["requires_human_review"]["const"] is True
+          for field in (
+              "automated_compliance_scoring_enabled",
+              "framework_applicability_determined",
+              "control_effectiveness_determined",
+              "legal_compliance_determined",
+              "regulatory_compliance_determined",
+              "supervisory_acceptance_determined",
+          ):
+              assert matrix["properties"][field]["const"] is False
+          PY
+      - name: Enforce offline control/evidence boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          path = Path("src/datagovops/control_matrix.py")
+          banned = {"asyncio", "ftplib", "http", "httpx", "requests", "socket", "subprocess", "urllib"}
+          tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  roots = {alias.name.split(".")[0] for alias in node.names}
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  roots = {node.module.split(".")[0]}
+              else:
+                  continue
+              if roots & banned:
+                  raise SystemExit(f"{path}: forbidden capability import")
+          PY
+      - name: Clean-wheel control/evidence smoke
+        run: |
+          python -m pip install build
+          python -m build --wheel
+          python -m venv /tmp/datagovops-control-matrix
+          /tmp/datagovops-control-matrix/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-control-matrix/bin/python - <<'PY'
+          import datagovops
+          from datagovops.control_matrix import (
+              ControlDefinition,
+              ControlDomain,
+              ControlEvidenceRegistry,
+              EvidenceRequirement,
+              EvidenceSourceBoundary,
+          )
+
+          assert datagovops.__version__ == "0.7.0"
+          registry = ControlEvidenceRegistry()
+          control = ControlDefinition(
+              institution_id="bank-a",
+              control_id="deployment-runtime",
+              control_version=1,
+              title="Deployment runtime evidence",
+              domain=ControlDomain.DEPLOYMENT_RUNTIME,
+              owner_id="owner",
+              objective="Represent deployment assessment evidence.",
+              evidence_requirements=(EvidenceRequirement("deployment_assessment", (EvidenceSourceBoundary.DEPLOYMENT,)),),
+              framework_references=(),
+              registered_at=1,
+          )
+          registry.register_control(control)
+          matrix = registry.build_matrix(
+              institution_id="bank-a",
+              matrix_id="smoke",
+              matrix_version=1,
+              control_ids=("deployment-runtime",),
+              assessed_at=2,
+          )
+          assert matrix.state.value == "with_gaps"
+          assert matrix.automated_compliance_scoring_enabled is False
+          print(datagovops.__version__)
+          PY

@@ -113,6 +113,19 @@ from .reporting import (
     ReportingRetestOutcome,
 )
 from .reporting_strict import ReportingGovernanceRegistry, ReportingRetestEvidence
+from .security import (
+    EncryptedEvidenceEnvelope,
+    EvidenceKeyReference,
+    IdentityPolicy,
+    InstitutionContext,
+    SecurityBoundaryError,
+    SecurityObservation,
+    assert_institution_scope,
+    assert_role,
+    decrypt_evidence,
+    encrypt_evidence,
+    verify_ed25519_oidc_token,
+)
 from .semantic import (
     AssetPurposeBinding,
     BusinessPurpose,
@@ -157,6 +170,8 @@ __all__ = [
     "DomainSnapshot",
     "DossierException",
     "DossierState",
+    "EncryptedEvidenceEnvelope",
+    "EvidenceKeyReference",
     "EvidenceTreatment",
     "ExecutiveAssuranceAttestation",
     "FindingResolutionState",
@@ -172,6 +187,8 @@ __all__ = [
     "GovernancePolicy",
     "GovernancePrincipal",
     "GovernedReport",
+    "IdentityPolicy",
+    "InstitutionContext",
     "LegalHold",
     "LegalHoldRelease",
     "LineageCompletenessReport",
@@ -223,13 +240,20 @@ __all__ = [
     "RiskDataAggregationAssessment",
     "RiskDataDomain",
     "RiskDataPortfolio",
+    "SecurityBoundaryError",
+    "SecurityObservation",
     "SemanticGovernanceRegistry",
     "TransformationRecord",
+    "assert_institution_scope",
+    "assert_role",
     "assert_validation_report_current",
     "canonical_json",
+    "decrypt_evidence",
     "digest_artifact",
     "dossier_document",
+    "encrypt_evidence",
     "verify_dossier_document",
+    "verify_ed25519_oidc_token",
 ]
 
 __version__ = PACKAGE_VERSION

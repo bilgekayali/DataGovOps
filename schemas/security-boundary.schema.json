@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Institution Security Boundary v1",
+  "oneOf": [
+    {"$ref":"#/$defs/institution_context"},
+    {"$ref":"#/$defs/identity_policy"},
+    {"$ref":"#/$defs/encrypted_evidence"},
+    {"$ref":"#/$defs/security_observation"}
+  ],
+  "$defs": {
+    "digest": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "text": {"type":"string","minLength":1,"maxLength":512},
+    "roles": {"type":"array","minItems":1,"uniqueItems":true,"items":{"$ref":"#/$defs/text"}},
+    "key_reference": {
+      "type":"object","additionalProperties":false,
+      "required":["provider","key_id","key_version","schema_version"],
+      "properties":{
+        "provider":{"$ref":"#/$defs/text"},"key_id":{"$ref":"#/$defs/text"},"key_version":{"$ref":"#/$defs/text"},
+        "schema_version":{"const":"datagovops.evidence-key-reference.v1"}
+      }
+    },
+    "institution_context": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","principal_id","roles","issuer","audience","token_expires_at","mfa_verified","schema_version"],
+      "properties":{
+        "institution_id":{"$ref":"#/$defs/text"},"principal_id":{"$ref":"#/$defs/text"},"roles":{"$ref":"#/$defs/roles"},
+        "issuer":{"$ref":"#/$defs/text"},"audience":{"$ref":"#/$defs/text"},"token_expires_at":{"type":"integer","minimum":1},
+        "mfa_verified":{"type":"boolean"},"schema_version":{"const":"datagovops.institution-context.v1"}
+      }
+    },
+    "identity_policy": {
+      "type":"object","additionalProperties":false,
+      "required":["issuer","audience","required_roles","require_mfa","institution_claim","principal_claim","roles_claim","mfa_claim","clock_skew_seconds","schema_version"],
+      "properties":{
+        "issuer":{"$ref":"#/$defs/text"},"audience":{"$ref":"#/$defs/text"},
+        "required_roles":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/text"}},
+        "require_mfa":{"type":"boolean"},"institution_claim":{"$ref":"#/$defs/text"},"principal_claim":{"$ref":"#/$defs/text"},
+        "roles_claim":{"$ref":"#/$defs/text"},"mfa_claim":{"$ref":"#/$defs/text"},"clock_skew_seconds":{"type":"integer","minimum":0,"maximum":300},
+        "schema_version":{"const":"datagovops.identity-policy.v1"}
+      }
+    },
+    "encrypted_evidence": {
+      "type":"object","additionalProperties":false,
+      "required":["institution_id","artifact_type","key_reference","nonce_b64url","ciphertext_b64url","aad_sha256","algorithm","raw_content_logged","secrets_logged","production_key_management_validated","schema_version"],
+      "properties":{
+        "institution_id":{"$ref":"#/$defs/text"},"artifact_type":{"$ref":"#/$defs/text"},"key_reference":{"$ref":"#/$defs/key_reference"},
+        "nonce_b64url":{"type":"string","pattern":"^[A-Za-z0-9_-]+$"},"ciphertext_b64url":{"type":"string","pattern":"^[A-Za-z0-9_-]+$"},
+        "aad_sha256":{"$ref":"#/$defs/digest"},"algorithm":{"const":"AES-256-GCM"},"raw_content_logged":{"const":false},
+        "secrets_logged":{"const":false},"production_key_management_validated":{"const":false},
+        "schema_version":{"const":"datagovops.encrypted-evidence-envelope.v1"}
+      }
+    },
+    "security_observation": {
+      "type":"object","additionalProperties":false,
+      "required":["observed_at","event_type","institution_id","principal_id","outcome","correlation_id","artifact_type","raw_content_logged","secrets_logged","production_observability_validated","schema_version"],
+      "properties":{
+        "observed_at":{"type":"string","format":"date-time"},"event_type":{"$ref":"#/$defs/text"},"institution_id":{"$ref":"#/$defs/text"},
+        "principal_id":{"$ref":"#/$defs/text"},"outcome":{"$ref":"#/$defs/text"},"correlation_id":{"$ref":"#/$defs/text"},
+        "artifact_type":{"anyOf":[{"$ref":"#/$defs/text"},{"type":"null"}]},"raw_content_logged":{"const":false},"secrets_logged":{"const":false},
+        "production_observability_validated":{"const":false},"schema_version":{"const":"datagovops.security-observation.v1"}
+      }
+    }
+  }
+}

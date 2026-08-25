@@ -57,44 +57,45 @@
 - [x] Python 3.11/3.12/3.13 CI, wheel and clean-wheel CLI smoke;
 - [x] `0.1.0` package/code boundary and explicit publication non-claim.
 
-Completion of #3 through #8 constitutes the **DataGovOps v0.1.0 foundation code/package boundary**. A Git tag or GitHub Release is a separate publication action and must be verified independently.
-
 ## v0.2 reporting-governance and assurance train
 
 ### v0.2.0 — Regulatory reporting lineage, reconciliation and assurance evidence (#15)
-- [x] versioned governed-report identity, accountable owner, report family, purpose and frequency;
+- [x] governed report identity, accountable owner, report family, purpose and frequency;
 - [x] institution-owned timeliness, completeness and reconciliation thresholds;
-- [x] report metrics bound to exact governed source asset versions and explicit transformation/quality-rule evidence;
-- [x] strict latest-version currentness for source assets, transformations and quality rules;
-- [x] production observations bound to exact inventory/semantic/lineage/quality reporting-basis snapshots;
-- [x] deterministic `met` / `breached` / `incomplete` reporting-control assessments using integer units/basis points;
-- [x] fail-closed missing and conflicting-latest reporting evidence;
-- [x] accountable report-owner attestation with approved/rejected/escalated decisions;
-- [x] reporting findings, remediation and independent HIGH/CRITICAL retest evidence;
-- [x] reporting-domain dossier snapshot and aggregate gap/revalidation propagation;
-- [x] offline semantic verification that recomputes assessment controls and rejects rehashed forged `met` evidence;
-- [x] strict Draft 2020-12 reporting schemas and Python 3.11/3.12/3.13 release gates;
-- [x] `0.2.0` package/code boundary with explicit BCBS 239/regulatory-reporting non-claims.
+- [x] exact source/transformation/quality-rule bindings and currentness;
+- [x] production observations bound to exact governed reporting-basis snapshots;
+- [x] deterministic `met` / `breached` / `incomplete` reporting assessments;
+- [x] accountable owner attestation, findings, remediation and independent retest;
+- [x] reporting dossier snapshot and offline semantic verification;
+- [x] `0.2.0` package/code boundary with explicit non-claims.
 
 ## v0.3 BCBS 239 multi-report assurance train
 
 ### v0.3.0 — Report taxonomy, risk-data portfolio and accountable aggregation assurance (#17)
-- [x] institution-scoped report taxonomy with contiguous immutable version history;
-- [x] exact current governed-report binding to institution-owned risk domains and aggregation levels;
-- [x] versioned risk-data portfolios bound to exact report and taxonomy digests;
-- [x] configured required risk-domain coverage without automated legal-applicability inference;
-- [x] deterministic multi-report aggregation over current v0.2 report-assurance assessments;
-- [x] fail-closed missing/incomplete report evidence and missing accountable report-owner attestations;
-- [x] breached-state propagation for breached reports and rejected/escalated owner attestations;
-- [x] exact report-assessment and report-attestation digest manifests with deterministic counts/gaps;
-- [x] accountable portfolio-owner executive attestation with approval blocked for non-met aggregation state;
-- [x] strict Draft 2020-12 BCBS assurance schemas, offline-capability guard and clean-wheel smoke;
-- [x] structural non-claims for BCBS 239 compliance, risk-data accuracy and supervisory acceptance;
+- [x] institution-scoped report taxonomy with contiguous immutable versions;
+- [x] exact current report binding to institution-owned risk domains/aggregation levels;
+- [x] versioned risk-data portfolios bound to exact report/taxonomy digests;
+- [x] deterministic multi-report aggregation over current reporting assessments;
+- [x] fail-closed missing/incomplete evidence and owner attestations;
+- [x] accountable portfolio-owner executive attestation;
+- [x] strict schemas, offline guard, clean-wheel smoke and structural non-claims;
 - [x] `0.3.0` package/code boundary.
+
+## v0.4 institution security train
+
+### v0.4.0 — Identity, institution isolation and evidence cryptography (#18)
+- [x] caller-supplied trusted Ed25519 public-key verification for OIDC/JWT evidence;
+- [x] issuer, audience, expiration/not-before, institution-scope, role and MFA checks;
+- [x] immutable `InstitutionContext` with explicit cross-institution and RBAC guards;
+- [x] AES-256-GCM evidence protection bound to institution, artifact type and external key reference;
+- [x] external KMS/HSM reference semantics with no embedded private keys/secrets;
+- [x] metadata-only security observations and production-observability non-claims;
+- [x] PostgreSQL `FORCE ROW LEVEL SECURITY` + `NOBYPASSRLS` institution-isolation reference;
+- [x] strict Draft 2020-12 security schema, adversarial tests and dedicated security CI gate;
+- [x] `0.4.0` package/code boundary while retaining Alpha maturity.
 
 ## Later hardening toward v1
 
-- PostgreSQL tenant isolation/RLS and institution-owned cryptographic boundaries;
 - institution-owned signing keys, external immutable anchors and trusted timestamping;
 - immutable audit/recovery evidence;
 - deployment, supply-chain and release hardening;

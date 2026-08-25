@@ -74,7 +74,7 @@ jobs:
           import datagovops
           from datagovops import build_dependency_sbom, verify_dependency_sbom
 
-          assert datagovops.__version__ == "0.7.0"
+          assert datagovops.__version__ == "0.8.0"
           sbom = build_dependency_sbom("datagovops", datagovops.__version__, (("cryptography", "46.0.0"),))
           verify_dependency_sbom(
               sbom,

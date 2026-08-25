@@ -75,11 +75,20 @@
 - [x] four strict Draft 2020-12 schemas, offline guard and clean-wheel deployment CI;
 - [x] `0.7.0` package/code boundary while retaining Alpha maturity.
 
-## v0.8 control/evidence matrix
+## v0.8 control/evidence matrix train
 
-- [ ] map BCBS 239 / privacy / security / recovery / deployment controls to expected evidence and accountable roles;
-- [ ] deterministic coverage/gap output without automated compliance scoring;
-- [ ] machine-readable control matrix and management assurance export.
+### v0.8.0 — Cross-boundary control/evidence mapping and currentness assurance (#22)
+- [x] versioned institution-owned control definitions with accountable owners and explicit objectives;
+- [x] optional framework-reference mappings with applicability and legal-compliance non-claims;
+- [x] evidence requirements restricted to explicitly accepted source boundaries;
+- [x] exact source-artifact, source-snapshot and verification-evidence SHA-256 bindings;
+- [x] deterministic `represented` / `gap` / `revalidation_required` control assessments;
+- [x] ambiguous-latest evidence failure and explicit stale/missing evidence handling;
+- [x] historical evidence preservation without silently reusing old evidence after a control-version change;
+- [x] machine-readable matrix with deterministic `represented` / `with_gaps` / `revalidation_required` state and integer counts;
+- [x] automated compliance scoring structurally disabled and human review structurally required;
+- [x] four strict Draft 2020-12 schemas, offline guard and clean-wheel matrix CI;
+- [x] `0.8.0` package/code boundary while retaining Alpha maturity.
 
 ## v0.9 release candidate
 

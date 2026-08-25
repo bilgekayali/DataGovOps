@@ -60,6 +60,7 @@ jobs:
               Path("src/datagovops/evidence_integrity.py"),
               Path("src/datagovops/audit_recovery.py"),
               Path("src/datagovops/deployment_hardening.py"),
+              Path("src/datagovops/control_matrix.py"),
               Path("src/datagovops/dossier.py"),
               Path("src/datagovops/dossier_release.py"),
               Path("src/datagovops/dossier_release_strict.py"),
@@ -101,10 +102,15 @@ jobs:
           from datagovops import (
               AccessRetentionPrivacyRegistry,
               BCBS239AssuranceRegistry,
+              ControlDefinition,
+              ControlDomain,
+              ControlEvidenceRegistry,
               DataAssetRegistry,
               DataAssetValidator,
               DeploymentEvidence,
               EvidenceKeyReference,
+              EvidenceRequirement,
+              EvidenceSourceBoundary,
               GovernanceDossierBuilder,
               IdentityPolicy,
               ImmutableImageReference,
@@ -123,7 +129,7 @@ jobs:
               verify_dossier_document,
           )
 
-          assert datagovops.__version__ == "0.7.0"
+          assert datagovops.__version__ == "0.8.0"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None
@@ -144,6 +150,11 @@ jobs:
           assert NetworkBoundary is not None
           assert RuntimeSecurityProfile is not None
           assert assess_deployment is not None
+          assert ControlDefinition is not None
+          assert ControlDomain is not None
+          assert ControlEvidenceRegistry is not None
+          assert EvidenceRequirement is not None
+          assert EvidenceSourceBoundary is not None
           assert GovernanceDossierBuilder is not None
           assert verify_dossier_document is not None
           print(datagovops.__version__)

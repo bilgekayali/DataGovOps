@@ -180,7 +180,7 @@ class DeploymentAssessment:
 
 
 def deployment_evidence_document(evidence: DeploymentEvidence) -> dict[str, object]:
-    payload = asdict(evidence)
+    payload = json.loads(canonical_json(asdict(evidence)))
     payload["image"]["canonical"] = evidence.image.canonical
     return payload
 

@@ -21,8 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ContractTests(unittest.TestCase):
-    def test_version_is_v0_8_0_at_release_gate(self):
-        self.assertEqual(datagovops.__version__, "0.8.0")
+    def test_version_is_v0_9_0_at_release_gate(self):
+        self.assertEqual(datagovops.__version__, "0.9.0")
+        self.assertEqual(datagovops.RELEASE_VERSION, "0.9.0")
 
     def _schema(self, name):
         schema = json.loads((ROOT / "schemas" / name).read_text(encoding="utf-8"))
@@ -102,6 +103,12 @@ class ContractTests(unittest.TestCase):
             schema["properties"]["schema_version"]["const"],
             "datagovops.data-asset-record.v1",
         )
+
+    def test_governance_dossier_schema_decouples_package_release_before_freeze(self):
+        schema = self._schema("governance-dossier.schema.json")
+        release_property = schema["$defs"]["dossier"]["properties"]["release_version"]
+        self.assertNotIn("const", release_property)
+        self.assertEqual(release_property["pattern"], r"^[0-9]+\.[0-9]+\.[0-9]+$")
 
 
 if __name__ == "__main__":

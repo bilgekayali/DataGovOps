@@ -90,13 +90,22 @@
 - [x] four strict Draft 2020-12 schemas, offline guard and clean-wheel matrix CI;
 - [x] `0.8.0` package/code boundary while retaining Alpha maturity.
 
-## v0.9 release candidate
+## v0.9 release-candidate train
 
-- [ ] freeze intentional public Python API and public schema surfaces;
-- [ ] add compatibility policy, CodeQL and release-candidate gates;
-- [ ] pin schema snapshots and repository-governance expectations without inventing enforcement evidence.
+### v0.9.0 — Public-contract freeze and release engineering
+- [x] freeze the intentional `datagovops.__all__` surface with a deterministic SHA-256 fingerprint;
+- [x] freeze the exact-byte public `schemas/*.schema.json` set with a deterministic SHA-256 fingerprint;
+- [x] decouple governance-dossier semantic-version metadata from one package version before schema freeze;
+- [x] add `COMPATIBILITY.md`, release-contract and repository-governance reference policy;
+- [x] pin third-party GitHub Actions to exact commit SHAs;
+- [x] add Python CodeQL and a dedicated release-candidate acceptance workflow;
+- [x] remove the stale v0.1 publication workflow from the active workflow surface;
+- [x] retain `enforcement_verified=false` for repository governance until live enforcement is independently verified;
+- [x] promote package maturity to Beta without claiming production readiness;
+- [x] `0.9.0` release-candidate package/code boundary.
 
 ## v1.0 stable reference
 
-- [ ] promote package/API/schema contract to `1.0.0` after all RC gates are green;
+- [ ] promote package metadata and runtime release version to `1.0.0` without changing the frozen v0.9 public API/schema fingerprints;
+- [ ] move package classifier to Production/Stable after all RC gates remain green on the exact v1 promotion head;
 - [ ] retain explicit production-readiness, regulatory-compliance and supervisory-acceptance non-claims unless external evidence exists.

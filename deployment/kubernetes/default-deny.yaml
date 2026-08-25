@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: datagovops-default-deny-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: datagovops
+  policyTypes: ["Ingress"]
+  ingress: []
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: datagovops-default-deny-egress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: datagovops
+  policyTypes: ["Egress"]
+  egress: []

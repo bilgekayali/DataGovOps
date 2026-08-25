@@ -1,0 +1,18 @@
+# Reference-only hardened container boundary.
+# BASE_IMAGE intentionally has no default: callers must provide an immutable digest,
+# for example --build-arg BASE_IMAGE=python@sha256:<verified-digest>.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+COPY dist/*.whl /tmp/datagovops/
+RUN python -m pip install --no-cache-dir /tmp/datagovops/*.whl \
+    && rm -rf /tmp/datagovops
+
+USER 65532:65532
+ENTRYPOINT ["datagovops"]
+CMD ["--version"]

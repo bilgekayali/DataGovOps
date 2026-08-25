@@ -1,112 +1,77 @@
 # DataGovOps
 
-**Evidence-backed data governance, lineage, quality, access, retention, privacy/security obligations, regulatory-reporting governance, and deterministic assurance evidence for regulated financial institutions.**
+**Evidence-backed data governance, lineage, quality, reporting assurance, security, release integrity, recovery evidence and deployment-control references for regulated financial institutions.**
 
 ## Summary
 
-DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, business purpose, quality, access, retention, privacy/security obligations, reporting controls, verifiable governance evidence, release integrity, and operational audit/recovery evidence.
+DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, business purpose, quality, access, retention, privacy/security obligations, reporting controls, verifiable governance evidence and deterministic operational assurance.
 
-Current code/package milestone: **DataGovOps v0.6.0 immutable audit and recovery evidence boundary** (`0.6.0`).
+Current code/package milestone: **DataGovOps v0.7.0 deployment and runtime hardening boundary** (`0.7.0`).
 
-This repository is not a data catalog replacement, privacy-law decision engine, automatic BCBS 239 compliance product, regulatory filing service, IAM/PAM replacement, production KMS/HSM, production tenant-isolation proof, trusted timestamp authority, production build-attestation service, WORM/audit-log platform, backup product, disaster-recovery controller, deletion engine, or substitute for accountable data owners, stewards, report owners, security/privacy teams, resilience teams, engineers, legal/regulatory review and supervisory judgement.
+A package version in the codebase does **not** by itself mean that a Git tag, GitHub Release, container image or production deployment has been published. Those facts must be verified separately.
 
-A `0.6.0` package version in the codebase does **not** by itself mean that a Git tag or GitHub Release has been published. Publication must be verified separately.
+## v0.7.0 deployment and runtime hardening boundary
 
-## v0.6.0 immutable audit and recovery evidence boundary
-
-v0.6 retains the v0.1-v0.5 governance, assurance, security and evidence-integrity boundaries and adds an offline operational-evidence chain:
+v0.7 retains the v0.1-v0.6 governance, BCBS 239 assurance, institution-security, signed-evidence and recovery boundaries and adds a deterministic deployment-control evidence layer:
 
 ```text
-Governed / signed evidence digest
+Verified package / release evidence
               |
               v
-Metadata-only AuditEvent #1
-              |
-      previous-event digest
-              v
-Metadata-only AuditEvent #2 ... N
+Immutable image reference
+repository@sha256:<digest>
               |
               v
-Audit-chain checkpoint
-
-Historical governed state digest
+Runtime security profile
+non-root / read-only / no privilege escalation
+capability drop / seccomp / no host namespaces
               |
-              v
-Institution recovery policy
-     |        |        |
-     v        v        v
-    RPO      RTO    retention
-              |
-              v
-Backup evidence -- exact backup bytes
-              |
-              v
-Restore verification
-              |
-              v
-Historical-state verification
-              |
-              v
-met / breached / incomplete assessment
+              +-------------------+
+              |                   |
+              v                   v
+Default-deny network        External secret refs
+              |                   |
+              +---------+---------+
+                        v
+             Deployment evidence
+                        |
+                        v
+        represented / incomplete assessment
 ```
 
-The v0.6 boundary includes:
+The v0.7 boundary includes:
 
-- institution-scoped append-only audit events with contiguous sequence numbers, predecessor digests and monotonic timestamps;
-- metadata-only audit observations with structural `raw_content_logged=false` and `secret_material_logged=false`;
-- deterministic audit-chain verification that fails closed on sequence gaps, predecessor tamper, time reversal or cross-institution evidence;
-- audit-chain checkpoints bound to exact event count/head digest while keeping `external_immutability_verified=false`;
-- institution-owned recovery policy evidence for maximum RPO, maximum RTO, maximum backup age and minimum retention;
-- backup evidence bound to exact policy digest, historical source-state digest, represented times, storage reference, SHA-256 and byte size;
-- exact-byte backup verification and deterministic retention-expiry binding;
-- restore verification bound to exact backup evidence and expected/recovered historical-state digests;
-- historical-state verification that deterministically records digest match or breach;
-- deterministic recovery assessment over backup freshness, represented RPO, retention schedule, restore integrity and represented RTO;
-- fail-closed precedence: `breached` before `incomplete`, with `met` only when every represented control is complete and within policy;
-- seven strict Draft 2020-12 schemas, adversarial tests, offline capability enforcement and clean-wheel CI.
+- SHA-256 digest-bound image references and rejection of mutable tag-bearing repository references;
+- non-root, read-only-root-filesystem, no-privilege-escalation, non-privileged, drop-all-capabilities and RuntimeDefault-seccomp expectations;
+- explicit disabled host network/PID/IPC namespaces and service-account-token automount;
+- default-deny ingress and egress evidence;
+- external secret references containing provider/key/version metadata only;
+- metadata-only runtime observations with raw-content and secret-material logging structurally disabled;
+- validator identity plus explicit negative-path confirmation;
+- deterministic `represented` / `incomplete` deployment assessment;
+- a reference Dockerfile that requires caller-supplied digest-pinned `BASE_IMAGE`;
+- a Kubernetes workload template with hardened security context and external-secrets CSI reference;
+- explicit default-deny NetworkPolicy references;
+- four strict Draft 2020-12 schemas, adversarial tests, offline capability enforcement and clean-wheel CI.
 
-Passing these checks does not prove production WORM immutability, backup durability, successful disaster recovery, or objective production RPO/RTO achievement. See [`docs/AUDIT_RECOVERY_BOUNDARY.md`](docs/AUDIT_RECOVERY_BOUNDARY.md).
+A represented deployment assessment is **not** a production security conclusion. See [`docs/DEPLOYMENT_HARDENING.md`](docs/DEPLOYMENT_HARDENING.md).
 
-## Retained v0.5 signed governance evidence and provenance boundary
+## Retained boundaries
 
-The v0.5 layer provides canonical governance-evidence statements bound to verified dossiers, external Ed25519 signature verification without runtime private signing keys, external signing-key references, immutable-anchor/timestamp receipt contracts, build provenance, CycloneDX-shaped dependency SBOMs and exact-byte release manifests. External anchor/TSA validity, signer authority, production key custody, complete SBOM coverage and production provenance remain explicit non-claims.
+- **v0.6 audit/recovery:** hash-chained metadata-only audit events, checkpoints, RPO/RTO/backup-age/retention policy evidence, exact-byte backup integrity, restore verification and historical-state verification.
+- **v0.5 signed evidence/provenance:** verified-dossier-bound Ed25519 evidence, external key references, anchor/timestamp receipt contracts, build provenance, SBOM and exact-byte release manifests.
+- **v0.4 institution security:** offline Ed25519 OIDC/JWT verification, institution/RBAC/MFA guards, AES-256-GCM evidence protection with external key references and PostgreSQL RLS reference.
+- **v0.3 BCBS 239 assurance:** report taxonomy, risk-data portfolios, multi-report aggregation evidence and accountable attestations.
+- **v0.2 reporting governance:** governed reports, exact source/transformation/quality bindings, timeliness/completeness/reconciliation controls, findings/remediation/retest.
+- **v0.1 foundation:** institution-scoped inventory/accountability, classification/CDE/business-purpose evidence, lineage, quality, access/retention/privacy-security obligations and deterministic governance dossiers.
 
-See [`docs/EVIDENCE_INTEGRITY.md`](docs/EVIDENCE_INTEGRITY.md).
-
-## Retained v0.4 institution security boundary
-
-The v0.4 layer provides offline Ed25519 JWT/OIDC verification, issuer/audience/time/institution/role/MFA checks, cross-institution/RBAC guards, AES-256-GCM evidence protection with external key references, metadata-only security observations and a PostgreSQL `FORCE ROW LEVEL SECURITY` + `NOBYPASSRLS` reference.
-
-See [`docs/SECURITY_BOUNDARY.md`](docs/SECURITY_BOUNDARY.md).
-
-## Retained v0.3 BCBS 239 assurance boundary
-
-The v0.3 layer provides institution-scoped report taxonomy, risk-data portfolios, deterministic multi-report aggregation over current reporting evidence, fail-closed missing/incomplete evidence, accountable owner attestations and structural non-claims for BCBS 239 compliance, risk-data accuracy and supervisory acceptance.
-
-## Retained v0.2 reporting-governance boundary
-
-The v0.2 layer provides versioned governed reports, exact source/transformation/quality-rule bindings, production observations, deterministic timeliness/completeness/reconciliation controls, accountable report-owner attestations, findings/remediation/retest and offline reporting-domain dossier verification.
-
-## Retained v0.1 foundation
-
-The foundation provides institution-scoped accountability and authoritative systems, immutable data-asset versions, classification/CDE/business-purpose evidence, lineage and transformation provenance, data-quality evidence, access/retention/legal-hold/privacy-security obligations, canonical JSON/SHA-256 binding, deterministic governance dossiers and offline integrity/semantic verification.
-
-Historical/versioned evidence remains preserved without silently becoming current after a governed source, transformation, policy or rule changes.
+Historical/versioned evidence remains preserved without silently becoming current after governed state changes.
 
 ## Governance dossier states
 
-A dossier state remains deterministic from represented governance evidence:
-
-- `current` — no represented current-state findings;
-- `with_gaps` — one or more represented gaps are not covered by an active explicit exception;
-- `with_exceptions` — represented gaps exist but are exactly covered by active time-bounded exceptions;
-- `revalidation_required` — stale or otherwise non-current represented evidence requires revalidation.
-
-The BCBS portfolio, institution-security, evidence-integrity and audit/recovery layers remain separate reference boundaries rather than new governance-dossier domains in v0.6.
+Governance dossiers retain deterministic states `current`, `with_gaps`, `with_exceptions` and `revalidation_required`. Security, signed-evidence, recovery and deployment layers remain separate reference boundaries rather than being treated as automatic legal-compliance domains.
 
 ## CLI
-
-The installed wheel exposes:
 
 ```bash
 datagovops --version
@@ -119,29 +84,22 @@ datagovops dossier verify governance-dossier.json
 
 Design mappings are intended to support evidence/control alignment with BCBS 239, Basel Committee implementation observations, GDPR/KVKK accountability concepts, ISO/IEC 27001, ISO/IEC 27701 and ISO 22301 control/evidence concepts, DAMA-aligned governance concepts, and relevant institution-owned BDDK/SPK requirements.
 
-These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer regulatory applicability, prove data/report correctness, or establish production resilience merely because evidence is represented.
+These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer regulatory applicability, prove data/report correctness, or establish production resilience/security merely because evidence is represented.
 
 ## Explicit non-claims
 
 DataGovOps does **not** by itself establish:
 
-- BCBS 239, GDPR, KVKK, BDDK, SPK, ISO/IEC 27001, ISO/IEC 27701 or ISO 22301 compliance;
-- production identity-provider/JWKS configuration or validation;
-- production PostgreSQL institution isolation or connection-pool isolation;
-- production KMS/HSM signing/encryption key custody, rotation, revocation or access-control effectiveness;
-- authority of a signer merely because an Ed25519 signature verifies;
-- external immutable-ledger anchoring or trusted timestamp validity;
-- complete transitive SBOM coverage or absence of vulnerabilities;
-- SLSA certification, production build provenance or formal release attestation;
-- production audit-log immutability or WORM enforcement;
-- production backup completion, durability, encryption effectiveness or restore success;
-- objective RPO/RTO achievement beyond represented evidence;
-- production observability effectiveness;
-- objective enterprise risk-data accuracy or completeness;
-- regulatory-reporting correctness, filing status or supervisory acceptance;
-- lawful basis or legal permissibility of a represented business purpose;
-- deletion execution/completion or legal-hold legal sufficiency;
-- regulator acceptance, certification or production fitness.
+- BCBS 239, GDPR, KVKK, BDDK, SPK or ISO compliance;
+- production identity-provider/JWKS or PostgreSQL institution-isolation effectiveness;
+- production KMS/HSM signing/encryption key custody or effectiveness;
+- signer authority, external timestamp/anchor validity or complete SBOM/vulnerability coverage;
+- SLSA certification or production build provenance;
+- production audit-log immutability, backup durability, restore success or objective RPO/RTO achievement;
+- Kubernetes admission/enforcement, registry/base-image trust, image vulnerability absence or runtime sandbox effectiveness;
+- NetworkPolicy effectiveness in a real CNI implementation;
+- external-secret provider effectiveness or production observability coverage;
+- regulatory-report correctness, supervisory acceptance, certification or production fitness.
 
 ## Roadmap
 

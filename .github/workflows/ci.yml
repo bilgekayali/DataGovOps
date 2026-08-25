@@ -55,6 +55,7 @@ jobs:
               Path("src/datagovops/access_retention_strict.py"),
               Path("src/datagovops/reporting.py"),
               Path("src/datagovops/reporting_strict.py"),
+              Path("src/datagovops/bcbs239.py"),
               Path("src/datagovops/dossier.py"),
               Path("src/datagovops/dossier_release.py"),
               Path("src/datagovops/dossier_release_strict.py"),
@@ -95,6 +96,7 @@ jobs:
           import datagovops
           from datagovops import (
               AccessRetentionPrivacyRegistry,
+              BCBS239AssuranceRegistry,
               DataAssetRegistry,
               DataAssetValidator,
               GovernanceDossierBuilder,
@@ -105,7 +107,7 @@ jobs:
               verify_dossier_document,
           )
 
-          assert datagovops.__version__ == "0.2.0"
+          assert datagovops.__version__ == "0.3.0"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None
@@ -113,6 +115,7 @@ jobs:
           assert QualityRegistry is not None
           assert AccessRetentionPrivacyRegistry is not None
           assert ReportingGovernanceRegistry is not None
+          assert BCBS239AssuranceRegistry is not None
           assert GovernanceDossierBuilder is not None
           assert verify_dossier_document is not None
           print(datagovops.__version__)

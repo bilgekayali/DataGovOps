@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps BCBS 239 Executive Assurance Attestation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "institution_id",
+    "attestation_id",
+    "aggregation_assessment_digest",
+    "owner_id",
+    "decision",
+    "rationale",
+    "evidence_digest",
+    "attested_at",
+    "bcbs239_compliance_determined",
+    "schema_version"
+  ],
+  "properties": {
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "attestation_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "aggregation_assessment_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "owner_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "decision": {"enum": ["approved", "rejected", "escalated"]},
+    "rationale": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "evidence_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "attested_at": {"type": "string", "format": "date-time"},
+    "bcbs239_compliance_determined": {"const": false},
+    "schema_version": {"const": "datagovops.bcbs239-executive-attestation.v1"}
+  }
+}

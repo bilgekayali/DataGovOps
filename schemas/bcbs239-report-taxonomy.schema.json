@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps BCBS 239 Report Taxonomy Entry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "institution_id",
+    "taxonomy_id",
+    "taxonomy_version",
+    "report_digest",
+    "risk_domain",
+    "aggregation_level",
+    "material",
+    "owner_id",
+    "rationale",
+    "registered_at",
+    "bcbs239_applicability_determined",
+    "schema_version"
+  ],
+  "properties": {
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "taxonomy_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "taxonomy_version": {"type": "integer", "minimum": 1},
+    "report_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "risk_domain": {"enum": ["credit", "market", "liquidity", "operational", "capital", "enterprise", "other"]},
+    "aggregation_level": {"enum": ["entity", "group", "business_line", "portfolio"]},
+    "material": {"type": "boolean"},
+    "owner_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "rationale": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "registered_at": {"type": "string", "format": "date-time"},
+    "bcbs239_applicability_determined": {"const": false},
+    "schema_version": {"const": "datagovops.bcbs239-report-taxonomy.v1"}
+  }
+}

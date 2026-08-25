@@ -1,0 +1,101 @@
+name: BCBS 239 Assurance
+
+on:
+  push:
+    branches: [main, "agent/**"]
+    paths:
+      - "src/datagovops/bcbs239.py"
+      - "src/datagovops/__init__.py"
+      - "schemas/bcbs239-*.schema.json"
+      - "tests/test_bcbs239_assurance.py"
+      - "pyproject.toml"
+      - ".github/workflows/bcbs239-assurance.yml"
+  pull_request:
+    paths:
+      - "src/datagovops/bcbs239.py"
+      - "src/datagovops/__init__.py"
+      - "schemas/bcbs239-*.schema.json"
+      - "tests/test_bcbs239_assurance.py"
+      - "pyproject.toml"
+      - ".github/workflows/bcbs239-assurance.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  bcbs239-assurance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Run BCBS 239 assurance tests
+        run: python -m unittest tests.test_bcbs239_assurance -v
+      - name: Validate strict BCBS 239 schemas and non-claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          names = (
+              "bcbs239-report-taxonomy.schema.json",
+              "bcbs239-risk-data-portfolio.schema.json",
+              "bcbs239-aggregation-assessment.schema.json",
+              "bcbs239-executive-attestation.schema.json",
+          )
+          for name in names:
+              payload = json.loads((Path("schemas") / name).read_text(encoding="utf-8"))
+              assert payload["$schema"] == "https://json-schema.org/draft/2020-12/schema"
+              assert payload["additionalProperties"] is False
+              jsonschema.Draft202012Validator.check_schema(payload)
+          assessment = json.loads(Path("schemas/bcbs239-aggregation-assessment.schema.json").read_text())
+          for field in (
+              "bcbs239_compliance_determined",
+              "risk_data_accuracy_determined",
+              "supervisory_acceptance_determined",
+          ):
+              assert assessment["properties"][field]["const"] is False
+          executive = json.loads(Path("schemas/bcbs239-executive-attestation.schema.json").read_text())
+          assert executive["properties"]["bcbs239_compliance_determined"]["const"] is False
+          PY
+      - name: Verify offline BCBS 239 assurance capability boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          path = Path("src/datagovops/bcbs239.py")
+          tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+          banned = {"asyncio", "ftplib", "http", "httpx", "requests", "socket", "subprocess", "urllib"}
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  roots = {alias.name.split(".")[0] for alias in node.names}
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  roots = {node.module.split(".")[0]}
+              else:
+                  continue
+              if roots & banned:
+                  raise SystemExit(f"{path}: forbidden capability import")
+          PY
+      - name: Clean-wheel BCBS 239 smoke
+        run: |
+          python -m pip install build
+          python -m build --wheel
+          python -m venv /tmp/datagovops-bcbs239
+          /tmp/datagovops-bcbs239/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-bcbs239/bin/python - <<'PY'
+          from datagovops import (
+              BCBS239AssuranceRegistry,
+              ReportTaxonomyEntry,
+              RiskDataAggregationAssessment,
+              RiskDataPortfolio,
+          )
+          assert BCBS239AssuranceRegistry is not None
+          assert ReportTaxonomyEntry is not None
+          assert RiskDataAggregationAssessment is not None
+          assert RiskDataPortfolio is not None
+          PY

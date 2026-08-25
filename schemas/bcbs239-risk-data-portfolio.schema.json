@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps BCBS 239 Risk Data Portfolio v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "institution_id",
+    "portfolio_id",
+    "portfolio_version",
+    "name",
+    "owner_id",
+    "report_digests",
+    "taxonomy_digests",
+    "required_risk_domains",
+    "registered_at",
+    "schema_version"
+  ],
+  "properties": {
+    "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "portfolio_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "portfolio_version": {"type": "integer", "minimum": 1},
+    "name": {"type": "string", "minLength": 1, "maxLength": 512},
+    "owner_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "report_digests": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "taxonomy_digests": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "required_risk_domains": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["credit", "market", "liquidity", "operational", "capital", "enterprise", "other"]}},
+    "registered_at": {"type": "string", "format": "date-time"},
+    "schema_version": {"const": "datagovops.bcbs239-risk-data-portfolio.v1"}
+  }
+}

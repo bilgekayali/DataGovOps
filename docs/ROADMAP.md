@@ -108,9 +108,23 @@
 - [x] five strict Draft 2020-12 evidence schemas and dedicated Release Evidence Integrity CI;
 - [x] `0.5.0` package/code boundary while retaining Alpha maturity.
 
+## v0.6 immutable audit and recovery evidence train
+
+### v0.6.0 — Audit chains, backup/restore evidence and historical-state verification (#20)
+- [x] institution-scoped metadata-only audit events with contiguous sequence and predecessor-digest binding;
+- [x] monotonic timestamp and cross-institution fail-closed chain verification;
+- [x] audit-chain checkpoints with explicit external-immutability non-claim;
+- [x] institution-owned RPO/RTO/backup-age/minimum-retention policy evidence;
+- [x] backup evidence bound to exact historical-state digest, policy digest, storage reference, SHA-256 and byte size;
+- [x] exact-byte backup verification and deterministic retention-expiry binding;
+- [x] restore verification bound to exact backup and expected/recovered state digests;
+- [x] historical-state verification with deterministic match/breach evidence;
+- [x] deterministic `met` / `breached` / `incomplete` recovery assessment over freshness, RPO, retention, restore integrity and RTO;
+- [x] seven strict Draft 2020-12 schemas, offline guard and clean-wheel audit/recovery CI;
+- [x] `0.6.0` package/code boundary while retaining Alpha maturity.
+
 ## Later hardening toward v1
 
-- immutable audit/recovery evidence and historical restoration verification;
 - deployment, supply-chain and runtime operational hardening;
 - BCBS 239 / privacy / security control-evidence mapping without automated compliance scoring;
 - release-candidate CodeQL/governance gates and compatibility freeze;

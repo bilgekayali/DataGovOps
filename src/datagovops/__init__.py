@@ -63,6 +63,26 @@ from .bcbs239 import (
     RiskDataDomain,
     RiskDataPortfolio,
 )
+from .deployment_hardening import (
+    DEPLOYMENT_ASSESSMENT_SCHEMA_VERSION,
+    DEPLOYMENT_EVIDENCE_SCHEMA_VERSION,
+    IMAGE_REFERENCE_SCHEMA_VERSION,
+    RUNTIME_OBSERVATION_SCHEMA_VERSION,
+    DeploymentAssessment,
+    DeploymentAssuranceState,
+    DeploymentControlAssessment,
+    DeploymentControlState,
+    DeploymentEvidence,
+    ImmutableImageReference,
+    NetworkBoundary,
+    RuntimeObservation,
+    RuntimeSecurityProfile,
+    SecretInjectionReference,
+    assess_deployment,
+    assert_same_institution,
+    deployment_evidence_digest,
+    deployment_evidence_document,
+)
 from .dossier import (
     DOSSIER_SCHEMA_VERSION,
     RELEASE_VERSION,
@@ -359,6 +379,27 @@ __all__.extend([
     "sha256_bytes",
     "verify_audit_chain",
     "verify_backup_content",
+])
+
+__all__.extend([
+    "DEPLOYMENT_ASSESSMENT_SCHEMA_VERSION",
+    "DEPLOYMENT_EVIDENCE_SCHEMA_VERSION",
+    "IMAGE_REFERENCE_SCHEMA_VERSION",
+    "RUNTIME_OBSERVATION_SCHEMA_VERSION",
+    "DeploymentAssessment",
+    "DeploymentAssuranceState",
+    "DeploymentControlAssessment",
+    "DeploymentControlState",
+    "DeploymentEvidence",
+    "ImmutableImageReference",
+    "NetworkBoundary",
+    "RuntimeObservation",
+    "RuntimeSecurityProfile",
+    "SecretInjectionReference",
+    "assess_deployment",
+    "assert_same_institution",
+    "deployment_evidence_digest",
+    "deployment_evidence_document",
 ])
 
 __version__ = PACKAGE_VERSION

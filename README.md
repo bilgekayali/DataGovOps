@@ -1,63 +1,66 @@
 # DataGovOps
 
-**Evidence-backed data governance, lineage, quality, reporting assurance, security, release integrity, recovery evidence and deployment-control references for regulated financial institutions.**
+**Evidence-backed data governance, lineage, quality, reporting assurance, security, release integrity, recovery evidence, deployment-control references and cross-boundary control/evidence assurance for regulated financial institutions.**
 
 ## Summary
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, business purpose, quality, access, retention, privacy/security obligations, reporting controls, verifiable governance evidence and deterministic operational assurance.
 
-Current code/package milestone: **DataGovOps v0.7.0 deployment and runtime hardening boundary** (`0.7.0`).
+Current code/package milestone: **DataGovOps v0.8.0 control/evidence matrix boundary** (`0.8.0`).
 
 A package version in the codebase does **not** by itself mean that a Git tag, GitHub Release, container image or production deployment has been published. Those facts must be verified separately.
 
-## v0.7.0 deployment and runtime hardening boundary
+## v0.8.0 control/evidence matrix boundary
 
-v0.7 retains the v0.1-v0.6 governance, BCBS 239 assurance, institution-security, signed-evidence and recovery boundaries and adds a deterministic deployment-control evidence layer:
+v0.8 retains the v0.1-v0.7 governance, BCBS 239 assurance, institution-security, signed-evidence, recovery and deployment boundaries and adds a machine-readable cross-boundary evidence index:
 
 ```text
-Verified package / release evidence
+Institution-owned versioned control
+              |
+              +--> evidence requirement(s)
+              |         |
+              |         +--> accepted source boundary
+              |
+              +--> optional framework reference
+                        applicability remains undetermined
+
+Exact source artifact digest
+Exact source snapshot digest
+Verification-evidence digest
               |
               v
-Immutable image reference
-repository@sha256:<digest>
+Control evidence reference
+              |
+      currentness evaluation
               |
               v
-Runtime security profile
-non-root / read-only / no privilege escalation
-capability drop / seccomp / no host namespaces
+represented / gap / revalidation_required
               |
-              +-------------------+
-              |                   |
-              v                   v
-Default-deny network        External secret refs
-              |                   |
-              +---------+---------+
-                        v
-             Deployment evidence
-                        |
-                        v
-        represented / incomplete assessment
+              v
+Control / Evidence Matrix
+(integer counts only; no compliance score)
 ```
 
-The v0.7 boundary includes:
+The v0.8 boundary includes:
 
-- SHA-256 digest-bound image references and rejection of mutable tag-bearing repository references;
-- non-root, read-only-root-filesystem, no-privilege-escalation, non-privileged, drop-all-capabilities and RuntimeDefault-seccomp expectations;
-- explicit disabled host network/PID/IPC namespaces and service-account-token automount;
-- default-deny ingress and egress evidence;
-- external secret references containing provider/key/version metadata only;
-- metadata-only runtime observations with raw-content and secret-material logging structurally disabled;
-- validator identity plus explicit negative-path confirmation;
-- deterministic `represented` / `incomplete` deployment assessment;
-- a reference Dockerfile that requires caller-supplied digest-pinned `BASE_IMAGE`;
-- a Kubernetes workload template with hardened security context and external-secrets CSI reference;
-- explicit default-deny NetworkPolicy references;
+- versioned, institution-scoped `ControlDefinition` records with accountable owners and explicit objectives;
+- required evidence types with explicitly accepted source boundaries including BCBS 239, access/retention/privacy, security, recovery, deployment, release evidence, governance dossiers and institution-owned external evidence;
+- optional framework/reference mappings whose applicability remains structurally undetermined;
+- exact SHA-256 binding to source artifact, source snapshot and verification evidence;
+- explicit observation and revalidation timestamps;
+- deterministic currentness: missing evidence -> `gap`, unique current evidence -> `represented`, stale evidence -> `revalidation_required`;
+- ambiguous latest evidence fails closed rather than selecting one silently;
+- evidence bound to an older control version remains historical and is not silently reused after the control advances;
+- matrix state precedence `revalidation_required` > `with_gaps` > `represented`;
+- integer control counts only, with no percentage, maturity score, pass rate or compliance score;
+- mandatory human review and structural non-claims for framework applicability, control effectiveness, legal/regulatory compliance and supervisory acceptance;
 - four strict Draft 2020-12 schemas, adversarial tests, offline capability enforcement and clean-wheel CI.
 
-A represented deployment assessment is **not** a production security conclusion. See [`docs/DEPLOYMENT_HARDENING.md`](docs/DEPLOYMENT_HARDENING.md).
+A represented matrix means only that the configured evidence requirements are represented by current evidence references. It does **not** establish compliance or production control effectiveness. See [`docs/CONTROL_EVIDENCE_MATRIX.md`](docs/CONTROL_EVIDENCE_MATRIX.md).
 
 ## Retained boundaries
 
+- **v0.7 deployment/runtime hardening:** digest-bound immutable image references, hardened Docker/Kubernetes references, non-root/read-only/no-privilege-escalation runtime controls, default-deny network evidence and external-secret references.
 - **v0.6 audit/recovery:** hash-chained metadata-only audit events, checkpoints, RPO/RTO/backup-age/retention policy evidence, exact-byte backup integrity, restore verification and historical-state verification.
 - **v0.5 signed evidence/provenance:** verified-dossier-bound Ed25519 evidence, external key references, anchor/timestamp receipt contracts, build provenance, SBOM and exact-byte release manifests.
 - **v0.4 institution security:** offline Ed25519 OIDC/JWT verification, institution/RBAC/MFA guards, AES-256-GCM evidence protection with external key references and PostgreSQL RLS reference.
@@ -69,7 +72,7 @@ Historical/versioned evidence remains preserved without silently becoming curren
 
 ## Governance dossier states
 
-Governance dossiers retain deterministic states `current`, `with_gaps`, `with_exceptions` and `revalidation_required`. Security, signed-evidence, recovery and deployment layers remain separate reference boundaries rather than being treated as automatic legal-compliance domains.
+Governance dossiers retain deterministic states `current`, `with_gaps`, `with_exceptions` and `revalidation_required`. Security, signed-evidence, recovery, deployment and control/evidence-matrix layers remain separate reference boundaries rather than being treated as automatic legal-compliance domains.
 
 ## CLI
 
@@ -84,13 +87,15 @@ datagovops dossier verify governance-dossier.json
 
 Design mappings are intended to support evidence/control alignment with BCBS 239, Basel Committee implementation observations, GDPR/KVKK accountability concepts, ISO/IEC 27001, ISO/IEC 27701 and ISO 22301 control/evidence concepts, DAMA-aligned governance concepts, and relevant institution-owned BDDK/SPK requirements.
 
-These are architecture/design inputs. DataGovOps does not certify compliance, determine lawful basis, infer regulatory applicability, prove data/report correctness, or establish production resilience/security merely because evidence is represented.
+These are architecture/design inputs. A framework reference in the v0.8 matrix is a mapping aid, not a determination that the framework applies. DataGovOps does not certify compliance, determine lawful basis, infer regulatory applicability, prove data/report correctness, or establish production resilience/security merely because evidence is represented.
 
 ## Explicit non-claims
 
 DataGovOps does **not** by itself establish:
 
 - BCBS 239, GDPR, KVKK, BDDK, SPK or ISO compliance;
+- framework, legal or regulatory applicability merely because a control is mapped to a reference;
+- objective control effectiveness or a compliance/maturity percentage;
 - production identity-provider/JWKS or PostgreSQL institution-isolation effectiveness;
 - production KMS/HSM signing/encryption key custody or effectiveness;
 - signer authority, external timestamp/anchor validity or complete SBOM/vulnerability coverage;

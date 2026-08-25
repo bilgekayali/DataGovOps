@@ -21,8 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ContractTests(unittest.TestCase):
-    def test_version_is_v0_2_0_at_release_gate(self):
-        self.assertEqual(datagovops.__version__, "0.2.0")
+    def test_version_is_v0_3_0_at_release_gate(self):
+        self.assertEqual(datagovops.__version__, "0.3.0")
 
     def _schema(self, name):
         schema = json.loads((ROOT / "schemas" / name).read_text(encoding="utf-8"))

@@ -3,12 +3,12 @@
   "candidate_version": "0.9.0",
   "target_stable_version": "1.0.0",
   "public_api": {
-    "symbol_count": 0,
-    "sha256": "PENDING"
+    "symbol_count": 199,
+    "sha256": "b6f56ad2ee9611064a5241ec7a0d7c171b2846c2bb5601266388f29ca3d369fa"
   },
   "schema_set": {
-    "file_count": 0,
-    "sha256": "PENDING"
+    "file_count": 63,
+    "sha256": "76f2a6aaaf13961781da79568ebd0ea9060fbc74b604c31c6a68df6a7b97ea6b"
   },
   "repository_governance_enforcement_verified": false,
   "requires_human_release_decision": true,

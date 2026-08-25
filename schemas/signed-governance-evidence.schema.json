@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Signed Governance Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["statement", "statement_digest", "signature_algorithm", "signature_scope", "signature_b64url"],
+  "properties": {
+    "statement": {"$ref": "#/$defs/statement"},
+    "statement_digest": {"$ref": "#/$defs/digest"},
+    "signature_algorithm": {"const": "Ed25519"},
+    "signature_scope": {"const": "canonical-json-v1"},
+    "signature_b64url": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_-]+$"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "key_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "key_id", "key_version"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1, "maxLength": 256},
+        "key_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "key_version": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "institution_id", "dossier_digest", "release_version", "source_revision", "signer_id", "key_reference", "signed_at", "legal_compliance_determined", "supervisory_acceptance_determined"],
+      "properties": {
+        "schema_version": {"const": "datagovops.signed-governance-evidence.v1"},
+        "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "dossier_digest": {"$ref": "#/$defs/digest"},
+        "release_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "source_revision": {"type": "string", "minLength": 1, "maxLength": 256},
+        "signer_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "key_reference": {"$ref": "#/$defs/key_reference"},
+        "signed_at": {"type": "integer", "minimum": 0},
+        "legal_compliance_determined": {"const": false},
+        "supervisory_acceptance_determined": {"const": false}
+      }
+    }
+  }
+}

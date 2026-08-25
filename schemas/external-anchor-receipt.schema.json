@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps External Anchor Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["anchor", "anchor_digest"],
+  "properties": {
+    "anchor": {"$ref": "#/$defs/anchor"},
+    "anchor_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "institution_id", "evidence_digest", "provider", "anchor_id", "anchored_at", "timestamp_token_sha256", "external_anchor_validated", "trusted_timestamp_validated"],
+      "properties": {
+        "schema_version": {"const": "datagovops.external-anchor-receipt.v1"},
+        "institution_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "evidence_digest": {"$ref": "#/$defs/digest"},
+        "provider": {"type": "string", "minLength": 1, "maxLength": 256},
+        "anchor_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "anchored_at": {"type": "integer", "minimum": 0},
+        "timestamp_token_sha256": {"$ref": "#/$defs/digest"},
+        "external_anchor_validated": {"const": false},
+        "trusted_timestamp_validated": {"const": false}
+      }
+    }
+  }
+}

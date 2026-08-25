@@ -57,6 +57,7 @@ jobs:
               Path("src/datagovops/reporting_strict.py"),
               Path("src/datagovops/bcbs239.py"),
               Path("src/datagovops/security.py"),
+              Path("src/datagovops/evidence_integrity.py"),
               Path("src/datagovops/dossier.py"),
               Path("src/datagovops/dossier_release.py"),
               Path("src/datagovops/dossier_release_strict.py"),
@@ -108,10 +109,12 @@ jobs:
               QualityRegistry,
               ReportingGovernanceRegistry,
               SemanticGovernanceRegistry,
+              SigningKeyReference,
+              build_dependency_sbom,
               verify_dossier_document,
           )
 
-          assert datagovops.__version__ == "0.4.0"
+          assert datagovops.__version__ == "0.5.0"
           assert DataAssetRegistry is not None
           assert DataAssetValidator is not None
           assert SemanticGovernanceRegistry is not None
@@ -123,6 +126,8 @@ jobs:
           assert InstitutionContext is not None
           assert IdentityPolicy is not None
           assert EvidenceKeyReference is not None
+          assert SigningKeyReference is not None
+          assert build_dependency_sbom is not None
           assert GovernanceDossierBuilder is not None
           assert verify_dossier_document is not None
           print(datagovops.__version__)

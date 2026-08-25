@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Release Evidence Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest", "manifest_digest"],
+  "properties": {
+    "manifest": {"$ref": "#/$defs/manifest"},
+    "manifest_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "size", "media_type"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "size": {"type": "integer", "minimum": 0},
+        "media_type": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "package_name", "package_version", "source_revision", "artifacts", "provenance_path", "sbom_path", "signed_governance_evidence_path", "anchor_receipt_path", "formal_release_attested", "production_readiness_determined", "regulatory_compliance_determined"],
+      "properties": {
+        "schema_version": {"const": "datagovops.release-evidence-manifest.v1"},
+        "package_name": {"type": "string", "minLength": 1, "maxLength": 256},
+        "package_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "artifacts": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "provenance_path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "sbom_path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "signed_governance_evidence_path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "anchor_receipt_path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "formal_release_attested": {"const": false},
+        "production_readiness_determined": {"const": false},
+        "regulatory_compliance_determined": {"const": false}
+      }
+    }
+  }
+}

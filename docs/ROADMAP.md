@@ -94,10 +94,24 @@
 - [x] strict Draft 2020-12 security schema, adversarial tests and dedicated security CI gate;
 - [x] `0.4.0` package/code boundary while retaining Alpha maturity.
 
+## v0.5 signed governance evidence and provenance train
+
+### v0.5.0 — External signatures, anchor receipts and release evidence (#19)
+- [x] canonical governance-evidence statement bound to an already verified dossier, institution, release and source revision;
+- [x] external Ed25519 signature verification with no runtime private-signing-key API/material;
+- [x] institution/external signing-key reference semantics;
+- [x] immutable-anchor and timestamp-token receipt contracts with validation non-claims;
+- [x] deterministic build provenance bound to package/version/source and exact subjects/materials;
+- [x] CycloneDX-shaped dependency SBOM with explicit completeness/vulnerability non-claims;
+- [x] exact-byte release-evidence manifest using SHA-256 and artifact sizes;
+- [x] provenance/SBOM/manifest identity cross-checks and tamper-failure paths;
+- [x] five strict Draft 2020-12 evidence schemas and dedicated Release Evidence Integrity CI;
+- [x] `0.5.0` package/code boundary while retaining Alpha maturity.
+
 ## Later hardening toward v1
 
-- institution-owned signing keys, external immutable anchors and trusted timestamping;
-- immutable audit/recovery evidence;
-- deployment, supply-chain and release hardening;
+- immutable audit/recovery evidence and historical restoration verification;
+- deployment, supply-chain and runtime operational hardening;
 - BCBS 239 / privacy / security control-evidence mapping without automated compliance scoring;
+- release-candidate CodeQL/governance gates and compatibility freeze;
 - stable API/data compatibility policy and v1 stable reference.

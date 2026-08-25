@@ -73,7 +73,7 @@ jobs:
           import datagovops
           from datagovops import RecoveryPolicy, assess_recovery
 
-          assert datagovops.__version__ == "0.9.0"
+          assert datagovops.__version__ == "1.0.0"
           policy = RecoveryPolicy(
               institution_id="bank-a", policy_id="recovery", policy_version=1,
               owner_id="owner", maximum_rpo_seconds=60, maximum_rto_seconds=120,

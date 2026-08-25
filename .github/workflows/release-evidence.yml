@@ -1,0 +1,85 @@
+name: Release Evidence Integrity
+
+on:
+  push:
+    branches: [main, "agent/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  release-evidence-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Run evidence integrity tests
+        run: |
+          python -m unittest tests.test_evidence_integrity -v
+          python -m unittest tests.test_evidence_integrity_schemas -v
+      - name: Validate strict evidence schemas
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          names = [
+              "signed-governance-evidence.schema.json",
+              "external-anchor-receipt.schema.json",
+              "build-provenance.schema.json",
+              "dependency-sbom.schema.json",
+              "release-evidence-manifest.schema.json",
+          ]
+          for name in names:
+              schema = json.loads((Path("schemas") / name).read_text(encoding="utf-8"))
+              jsonschema.Draft202012Validator.check_schema(schema)
+              assert schema["additionalProperties"] is False
+              print(name)
+          PY
+      - name: Enforce public-key-only offline boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          path = Path("src/datagovops/evidence_integrity.py")
+          source = path.read_text(encoding="utf-8")
+          if "Ed25519PrivateKey" in source or "BEGIN PRIVATE KEY" in source:
+              raise SystemExit("runtime evidence-integrity source must not contain private signing-key API/material")
+          banned = {"asyncio", "http", "requests", "socket", "subprocess", "urllib"}
+          tree = ast.parse(source, filename=str(path))
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  roots = {alias.name.split(".")[0] for alias in node.names}
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  roots = {node.module.split(".")[0]}
+              else:
+                  continue
+              if roots & banned:
+                  raise SystemExit(f"{path}: forbidden online/execution capability import")
+          PY
+      - name: Clean-wheel evidence smoke
+        run: |
+          python -m pip install build
+          python -m build --wheel
+          python -m venv /tmp/datagovops-release-evidence
+          /tmp/datagovops-release-evidence/bin/python -m pip install dist/*.whl
+          /tmp/datagovops-release-evidence/bin/python - <<'PY'
+          import datagovops
+          from datagovops.evidence_integrity import build_dependency_sbom, verify_dependency_sbom
+
+          assert datagovops.__version__ == "0.4.0"
+          sbom = build_dependency_sbom("datagovops", datagovops.__version__, (("cryptography", "46.0.0"),))
+          verify_dependency_sbom(
+              sbom,
+              expected_package_name="datagovops",
+              expected_package_version=datagovops.__version__,
+          )
+          print(datagovops.__version__)
+          PY

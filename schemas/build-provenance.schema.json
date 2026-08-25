@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataGovOps Build Provenance v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["provenance", "provenance_digest"],
+  "properties": {
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "provenance_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "size", "media_type"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "size": {"type": "integer", "minimum": 0},
+        "media_type": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "revision"],
+      "properties": {
+        "uri": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "package_name", "package_version", "source_revision", "builder_id", "build_type", "invocation_id", "started_at", "finished_at", "subjects", "materials", "production_build_attested"],
+      "properties": {
+        "schema_version": {"const": "datagovops.build-provenance.v1"},
+        "package_name": {"type": "string", "minLength": 1, "maxLength": 256},
+        "package_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "builder_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "build_type": {"type": "string", "minLength": 1, "maxLength": 256},
+        "invocation_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "started_at": {"type": "integer", "minimum": 0},
+        "finished_at": {"type": "integer", "minimum": 0},
+        "subjects": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/artifact"}},
+        "materials": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/material"}},
+        "production_build_attested": {"const": false}
+      }
+    }
+  }
+}

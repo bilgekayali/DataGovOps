@@ -72,9 +72,9 @@ jobs:
           /tmp/datagovops-release-evidence/bin/python -m pip install dist/*.whl
           /tmp/datagovops-release-evidence/bin/python - <<'PY'
           import datagovops
-          from datagovops.evidence_integrity import build_dependency_sbom, verify_dependency_sbom
+          from datagovops import build_dependency_sbom, verify_dependency_sbom
 
-          assert datagovops.__version__ == "0.4.0"
+          assert datagovops.__version__ == "0.5.0"
           sbom = build_dependency_sbom("datagovops", datagovops.__version__, (("cryptography", "46.0.0"),))
           verify_dependency_sbom(
               sbom,

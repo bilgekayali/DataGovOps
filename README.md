@@ -27,7 +27,9 @@ The stable-reference boundary preserves:
 
 The `Development Status :: 5 - Production/Stable` classifier describes package/API maturity. It is **not** a claim that the reference has been deployed safely in a real financial institution, passed independent security validation, satisfies a regulator, or is fit for a specific production environment.
 
-No v1.0.0 Git tag, GitHub Release, package publication or deployment is implied by the source-tree promotion. Publication remains a separate explicit decision.
+The separately authorized [`v1.0.0` GitHub publication](https://github.com/bilgekayali/DataGovOps/releases/tag/v1.0.0) exists only when every required workflow succeeds on the same current `main` SHA. The publication workflow creates an immutable tag and a no-overwrite release; the source-tree version alone still does not prove that publication succeeded. See [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md).
+
+The GitHub Release does not publish a package to a package index, publish a container or deploy a service. Those remain separate, unauthorized actions.
 
 See [`COMPATIBILITY.md`](COMPATIBILITY.md) and the files under [`release/`](release/).
 

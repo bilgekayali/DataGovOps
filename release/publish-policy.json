@@ -1,0 +1,25 @@
+{
+  "schema_version": "datagovops.github-release-policy.v1",
+  "repository": "bilgekayali/DataGovOps",
+  "authorized": true,
+  "authorized_by": "bilgekayali",
+  "authorization_date": "2026-09-01",
+  "authorization_scope": "Owner authorized the v1.0.0 Git tag and GitHub Release after every required exact-main workflow succeeds; package-index publication and deployment remain excluded.",
+  "release_version": "1.0.0",
+  "release_title": "DataGovOps v1.0.0 — Stable Reference",
+  "notes_path": "release/v1.0.0-notes.md",
+  "prerelease": false,
+  "package_index_publication_authorized": false,
+  "deployment_authorized": false,
+  "required_workflows": {
+    ".github/workflows/audit-recovery.yml": "Audit Recovery Evidence",
+    ".github/workflows/bcbs239-assurance.yml": "BCBS 239 Assurance",
+    ".github/workflows/ci.yml": "CI",
+    ".github/workflows/codeql.yml": "CodeQL",
+    ".github/workflows/control-evidence-matrix.yml": "Control Evidence Matrix",
+    ".github/workflows/deployment-runtime.yml": "Deployment Runtime Hardening",
+    ".github/workflows/release-candidate.yml": "Stable Release Gate",
+    ".github/workflows/release-evidence.yml": "Release Evidence Integrity",
+    ".github/workflows/security-boundary.yml": "Security Boundary"
+  }
+}

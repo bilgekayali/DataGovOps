@@ -2,6 +2,16 @@
 
 **Evidence-backed data governance, lineage, quality, reporting assurance, security, release integrity, recovery evidence, deployment-control references and cross-boundary control/evidence assurance for regulated financial institutions.**
 
+## Executive overview — 30 seconds
+
+**Problem:** Data governance in regulated firms needs accountable ownership, classification, lineage and testable evidence across reporting and controls.
+
+**Reference solution:** A source-level control/evidence framework for governed data assets, data quality, retention and repeatable assurance.
+
+**Inspect the work:** [Source code](src/) · [Automated tests](tests/) · [Schemas](schemas/).
+
+**Status and limits:** v1.0.0 **stable reference contract**. Package maturity does not establish a tagged release, live deployment, regulatory certification or independent review.
+
 ## Summary
 
 DataGovOps is an open-source reference architecture for governing enterprise data assets through explicit ownership, classification, criticality, lineage, business purpose, quality, access, retention, privacy/security obligations, reporting controls, verifiable governance evidence and deterministic operational assurance.
